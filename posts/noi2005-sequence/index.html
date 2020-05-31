@@ -1,0 +1,1023 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content><meta name=description content="好像已经写了好多SPLAY了，维修数列说是最重口味的SPLAY题目了，好吧我也调了将近一上午，主要是最大子段和的地方自己YY错了，少考虑了一种情况。。"><meta name=keywords content=",BZOJ,NOI,SPLAY"><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://www.sxn.dev/posts/noi2005-sequence/><title>[BZOJ1500][NOI2005]维修数列（SPLAY） :: SHENXN</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.dede02da9537a98158079c023e83573e18127834838ef08172acce888341a797.css><meta itemprop=name content="[BZOJ1500][NOI2005]维修数列（SPLAY）"><meta itemprop=description content="好像已经写了好多SPLAY了，维修数列说是最重口味的SPLAY题目了，好吧我也调了将近一上午，主要是最大子段和的地方自己YY错了，少考虑了一种情况。。"><meta itemprop=datePublished content="2014-05-02T19:34:56+00:00"><meta itemprop=dateModified content="2014-05-02T19:34:56+00:00"><meta itemprop=wordCount content="2538"><meta itemprop=image content="https://www.sxn.dev"><meta itemprop=keywords content="BZOJ,NOI,SPLAY,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.sxn.dev"><meta name=twitter:title content="[BZOJ1500][NOI2005]维修数列（SPLAY）"><meta name=twitter:description content="好像已经写了好多SPLAY了，维修数列说是最重口味的SPLAY题目了，好吧我也调了将近一上午，主要是最大子段和的地方自己YY错了，少考虑了一种情况。。"><meta property="og:title" content="[BZOJ1500][NOI2005]维修数列（SPLAY）"><meta property="og:description" content="好像已经写了好多SPLAY了，维修数列说是最重口味的SPLAY题目了，好吧我也调了将近一上午，主要是最大子段和的地方自己YY错了，少考虑了一种情况。。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.sxn.dev/posts/noi2005-sequence/"><meta property="og:image" content="https://www.sxn.dev"><meta property="article:published_time" content="2014-05-02T19:34:56+00:00"><meta property="article:modified_time" content="2014-05-02T19:34:56+00:00"><meta property="og:site_name" content="SHENXN"><meta property="article:section" content="OI"><meta property="article:published_time" content="2014-05-02 19:34:56 +0000 UTC"></head><body class=dark-theme><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__mark>></span>
+<span class=logo__text>cd ~</span>
+<span class=logo__cursor></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://www.sxn.dev/about>About</a></li><li><a href=https://www.sxn.dev/posts>Blog</a></li><li><a href=https://www.sxn.dev/projects>Projects</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41C32.4934 41 41 32.4934 41 22 41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12 minutes</p></div><article><h1 class=post-title><a href=https://www.sxn.dev/posts/noi2005-sequence/>[BZOJ1500][NOI2005]维修数列（SPLAY）</a></h1><div class=post-content><p>好像已经写了好多SPLAY了，维修数列说是最重口味的SPLAY题目了，好吧我也调了将近一上午，主要是最大子段和的地方自己YY错了，少考虑了一种情况。。</p><p>其他操作都很水，然后最大子段和就是要维护max_l, max_r, max_sum分别表示左起最大子段和、右起最大子段和、最大子段和。在叶节点上显然max_l = max_r = max_sum = value。UPDATE的公式是：
+max_l = max(l_child->max_l, l_child->sum + value, l_child->sum + value + r_child->l_child);
+max_r = max(r_child->max_r, r_child->sum + value,  r_child->sum + value + l_child->r_child);
+max_sum = max(max_l, max_r, l_child->max_sum, r_child->max_sum, max(l_child->max_r, 0) + value + max(r_child->max_l, 0));</p><p>剩下的就是代码了（下面还有个暴力不要介意。。）</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#75715e>//NOI2005 DAY1 sequence.cpp splay
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable:4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define DEBUG_STD
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define HARD_WORK
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifndef HARD_WORK
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifndef NULL
+</span><span style=color:#75715e>#define NULL 0
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXS <span style=color:#f92672>=</span> <span style=color:#ae81ff>13</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>1024</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>1024</span>;
+
+<span style=color:#66d9ef>char</span> fread_string[MAXS];
+<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>fread_point <span style=color:#f92672>=</span> fread_string;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>int</span> sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>while</span> ((<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        sign <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;-&#39;</span>)
+        {
+            sign <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+        }
+        fread_point<span style=color:#f92672>++</span>;
+    }
+    <span style=color:#66d9ef>while</span> ((<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> <span style=color:#f92672>*</span>(fread_point<span style=color:#f92672>++</span>) <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+    }
+    <span style=color:#66d9ef>return</span> sign <span style=color:#f92672>*</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>get_string</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>input_string)
+{
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>    memset(input_string, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>10</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>while</span> ((<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>||</span> (<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        fread_point<span style=color:#f92672>++</span>;
+    }
+    <span style=color:#66d9ef>int</span> length <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (<span style=color:#f92672>*</span>fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        input_string[length<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> <span style=color:#f92672>*</span>(fread_point<span style=color:#f92672>++</span>);
+    }
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>read_num)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    <span style=color:#f92672>*</span>read_num <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, read_num);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>read_string)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    get_string(read_string);
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%s&#34;</span>, read_string);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> ll;
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>splay_node</span>
+{
+    <span style=color:#66d9ef>int</span> val;
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>l_child, <span style=color:#f92672>*</span>r_child;
+    <span style=color:#66d9ef>int</span> sum, max_l, max_r, max_sum, size;
+    <span style=color:#66d9ef>bool</span> down_swap, down_change;
+    <span style=color:#66d9ef>int</span> change_num;
+    <span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init</span>()
+    {
+        val <span style=color:#f92672>=</span> sum <span style=color:#f92672>=</span> max_l <span style=color:#f92672>=</span> max_r <span style=color:#f92672>=</span> max_sum <span style=color:#f92672>=</span> size <span style=color:#f92672>=</span> change_num <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+        parent <span style=color:#f92672>=</span> l_child <span style=color:#f92672>=</span> r_child <span style=color:#f92672>=</span> NULL;
+        down_swap <span style=color:#f92672>=</span> down_change <span style=color:#f92672>=</span> false;
+    }
+    <span style=color:#66d9ef>inline</span> <span style=color:#a6e22e>splay_node</span>()
+    {
+        init();
+    }
+    <span style=color:#66d9ef>inline</span> <span style=color:#f92672>~</span>splay_node()
+    {
+    }
+};
+
+<span style=color:#75715e>/*---recover memory---*/</span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>500000</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>10</span>;
+
+splay_node node_memory[MAXN];
+splay_node <span style=color:#f92672>*</span>memory_stack[MAXN];
+<span style=color:#66d9ef>int</span> top_stack;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_memory</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXN; i<span style=color:#f92672>++</span>)
+    {
+        memory_stack[i] <span style=color:#f92672>=</span> node_memory <span style=color:#f92672>+</span> i;
+    }
+    top_stack <span style=color:#f92672>=</span> MAXN;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_node</span>()
+{
+    <span style=color:#66d9ef>return</span> memory_stack[<span style=color:#f92672>--</span>top_stack];
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delete_node</span>(splay_node <span style=color:#f92672>*</span>del_node)
+{
+    memory_stack[top_stack<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> del_node;
+    del_node<span style=color:#f92672>-&gt;</span>init();
+}
+<span style=color:#75715e>/*---recover memory---*/</span>
+
+<span style=color:#66d9ef>int</span> n, m;
+<span style=color:#66d9ef>int</span> insert_num[MAXN];
+
+splay_node <span style=color:#f92672>*</span>head <span style=color:#f92672>=</span> NULL;
+
+<span style=color:#75715e>/*---splay---*/</span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_l_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_r_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_update_max</span>(splay_node <span style=color:#f92672>*</span>update_node)
+{
+    <span style=color:#66d9ef>if</span> ((update_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> (update_node<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL))
+    {
+        update_node<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_l, update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> (update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_l : <span style=color:#ae81ff>0</span>));
+        update_node<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_r, update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> (update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_r : <span style=color:#ae81ff>0</span>));
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_l, update_node<span style=color:#f92672>-&gt;</span>max_r);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_sum);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_sum);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, (update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_r : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> (update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_l : <span style=color:#ae81ff>0</span>));
+    }
+    <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (update_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL)
+    {
+        update_node<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_l, update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val);
+        update_node<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>val, update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_l, update_node<span style=color:#f92672>-&gt;</span>max_r);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>max_sum);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>val);
+    }
+    <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (update_node<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        update_node<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>val, update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val);
+        update_node<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_r, update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> update_node<span style=color:#f92672>-&gt;</span>val);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_l, update_node<span style=color:#f92672>-&gt;</span>max_r);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>max_sum);
+        update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(update_node<span style=color:#f92672>-&gt;</span>max_sum, update_node<span style=color:#f92672>-&gt;</span>val);
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        update_node<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> update_node<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> update_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> update_node<span style=color:#f92672>-&gt;</span>val;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zig</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>left_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>l_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_l_child(axis, left_child<span style=color:#f92672>-&gt;</span>r_child);
+    attach_as_r_child(left_child, axis);
+    left_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>sum;
+    axis<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> (axis<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> (axis<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> axis<span style=color:#f92672>-&gt;</span>val;
+    left_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> (axis<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> (axis<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+    splay_update_max(axis);
+    splay_update_max(left_child);
+    left_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> left_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> left_child;
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zag</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>right_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>r_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_r_child(axis, right_child<span style=color:#f92672>-&gt;</span>l_child);
+    attach_as_l_child(right_child, axis);
+    right_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>sum;
+    axis<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> (axis<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> (axis<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> axis<span style=color:#f92672>-&gt;</span>val;
+    right_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> (axis<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> (axis<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> axis<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+    splay_update_max(axis);
+    splay_update_max(right_child);
+    right_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> right_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> right_child;
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zig_zig</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    zig(axis<span style=color:#f92672>-&gt;</span>l_child);
+    zig(axis);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zig_zag</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    zig(axis<span style=color:#f92672>-&gt;</span>r_child);
+    zag(axis);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zag_zag</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    zag(axis<span style=color:#f92672>-&gt;</span>r_child);
+    zag(axis);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zag_zig</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    zag(axis<span style=color:#f92672>-&gt;</span>l_child);
+    zig(axis);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_swap</span>(splay_node <span style=color:#f92672>*</span>swap_node)
+{
+    <span style=color:#66d9ef>if</span> (swap_node <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    std<span style=color:#f92672>::</span>swap(swap_node<span style=color:#f92672>-&gt;</span>l_child, swap_node<span style=color:#f92672>-&gt;</span>r_child);
+    std<span style=color:#f92672>::</span>swap(swap_node<span style=color:#f92672>-&gt;</span>max_l, swap_node<span style=color:#f92672>-&gt;</span>max_r);
+    swap_node<span style=color:#f92672>-&gt;</span>down_swap <span style=color:#f92672>=</span> <span style=color:#f92672>!</span>swap_node<span style=color:#f92672>-&gt;</span>down_swap;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_down_swap</span>(splay_node <span style=color:#f92672>*</span>root)
+{
+    <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>down_swap)
+    {
+        splay_swap(root<span style=color:#f92672>-&gt;</span>l_child);
+        splay_swap(root<span style=color:#f92672>-&gt;</span>r_child);
+        root<span style=color:#f92672>-&gt;</span>down_swap <span style=color:#f92672>=</span> <span style=color:#f92672>!</span>root<span style=color:#f92672>-&gt;</span>down_swap;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_change</span>(splay_node <span style=color:#f92672>*</span>change_node, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> chan_num)
+{
+    <span style=color:#66d9ef>if</span> (change_node <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    change_node<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> chan_num;
+    change_node<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> change_node<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>*</span> chan_num;
+    change_node<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> change_node<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> change_node<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> (chan_num <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> chan_num : change_node<span style=color:#f92672>-&gt;</span>sum);
+    change_node<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>=</span> true;
+    change_node<span style=color:#f92672>-&gt;</span>change_num <span style=color:#f92672>=</span> chan_num;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_down_change</span>(splay_node <span style=color:#f92672>*</span>root)
+{
+    <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>down_change)
+    {
+        splay_change(root<span style=color:#f92672>-&gt;</span>l_child, root<span style=color:#f92672>-&gt;</span>change_num);
+        splay_change(root<span style=color:#f92672>-&gt;</span>r_child, root<span style=color:#f92672>-&gt;</span>change_num);
+        root<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>=</span> false;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_route</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>grand_parent;
+    <span style=color:#66d9ef>while</span> (((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> ((grand_parent <span style=color:#f92672>=</span> parent<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL))
+    {
+        splay_down_swap(grand_parent);
+        splay_down_swap(parent);
+        <span style=color:#75715e>//splay_down_swap(v);
+</span><span style=color:#75715e></span>        splay_down_change(grand_parent);
+        splay_down_change(parent);
+        <span style=color:#75715e>//splay_down_change(v);
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (grand_parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> parent)
+        {
+            <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+            {
+                zig_zig(grand_parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zag_zig(grand_parent);
+            }
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> v)
+            {
+                zag_zag(grand_parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zig_zag(grand_parent);
+            }
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL)
+    {
+        splay_down_swap(parent);
+        <span style=color:#75715e>//splay_down_swap(v);
+</span><span style=color:#75715e></span>        splay_down_change(parent);
+        <span style=color:#75715e>//splay_down_change(v);
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+        {
+            zig(parent);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            zag(parent);
+        }
+    }
+    <span style=color:#75715e>//splay_down_swap(v);
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//splay_down_change(v);
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> v;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_top</span>(splay_node <span style=color:#f92672>*</span>root <span style=color:#f92672>=</span> head)
+{
+    <span style=color:#66d9ef>for</span> (splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> root; tmp <span style=color:#f92672>!=</span> NULL; tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>l_child)
+    {
+        splay_down_swap(tmp);
+        splay_down_change(tmp);
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> NULL)
+        {
+            <span style=color:#66d9ef>return</span> tmp;
+        }
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_bottom</span>(splay_node <span style=color:#f92672>*</span>root <span style=color:#f92672>=</span> head)
+{
+    <span style=color:#66d9ef>for</span> (splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> root; tmp <span style=color:#f92672>!=</span> NULL; tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>r_child)
+    {
+        splay_down_swap(tmp);
+        splay_down_change(tmp);
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> NULL)
+        {
+            <span style=color:#66d9ef>return</span> tmp;
+        }
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_find</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length, splay_node <span style=color:#f92672>*</span>root <span style=color:#f92672>=</span> head)
+{
+    <span style=color:#66d9ef>int</span> size <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> root; tmp <span style=color:#f92672>!=</span> NULL;)
+    {
+        splay_down_swap(tmp);
+        splay_down_change(tmp);
+        <span style=color:#66d9ef>if</span> (size <span style=color:#f92672>+</span> (tmp<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>==</span> length)
+        {
+            <span style=color:#66d9ef>return</span> tmp;
+        }
+        <span style=color:#66d9ef>if</span> (size <span style=color:#f92672>+</span> (tmp<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&gt;</span> length)
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>l_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            size <span style=color:#f92672>+=</span> (tmp<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>r_child;
+        }
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_build</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r)
+{
+    <span style=color:#66d9ef>int</span> mid <span style=color:#f92672>=</span> (l <span style=color:#f92672>+</span> r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+    splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> new_node();
+    tmp<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> insert_num[mid];
+    <span style=color:#66d9ef>if</span> (l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>==</span> r)
+    {
+        tmp<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>max_l <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>max_r <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>max_sum <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>val;
+        tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>int</span> sum <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>val, size <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (l <span style=color:#f92672>&lt;</span> mid)
+        {
+            attach_as_l_child(tmp, splay_build(l, mid));
+            sum <span style=color:#f92672>+=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+            size <span style=color:#f92672>+=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size;
+        }
+        <span style=color:#66d9ef>if</span> (mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;</span> r)
+        {
+            attach_as_r_child(tmp, splay_build(mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, r));
+            sum <span style=color:#f92672>+=</span> tmp<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+            size <span style=color:#f92672>+=</span> tmp<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size;
+        }
+        tmp<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> sum;
+        tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> size;
+        splay_update_max(tmp);
+    }
+    <span style=color:#66d9ef>return</span> tmp;
+}
+
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_remove</span>(splay_node <span style=color:#f92672>*</span>remove_node)
+{
+    <span style=color:#66d9ef>if</span> (remove_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL)
+    {
+        splay_remove(remove_node<span style=color:#f92672>-&gt;</span>l_child);
+    }
+    <span style=color:#66d9ef>if</span> (remove_node<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        splay_remove(remove_node<span style=color:#f92672>-&gt;</span>r_child);
+    }
+    delete_node(remove_node);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_insert</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> cur, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length)
+{
+    splay_node <span style=color:#f92672>*</span>root <span style=color:#f92672>=</span> splay_build(<span style=color:#ae81ff>0</span>, length);
+    <span style=color:#66d9ef>if</span> (head <span style=color:#f92672>==</span> NULL)
+    {
+        head <span style=color:#f92672>=</span> root;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_top());
+            attach_as_l_child(head, root);
+            splay_update_max(head);
+            head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>size;
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_find(cur));
+            <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+            {
+                head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+                splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> splay_route(splay_top(head<span style=color:#f92672>-&gt;</span>r_child));
+                attach_as_r_child(head, tmp);
+                attach_as_l_child(tmp, root);
+                splay_update_max(tmp);
+                tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>size;
+                tmp<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>sum;
+                splay_update_max(head);
+                head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>size;
+                head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>sum;
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                attach_as_r_child(head, root);
+                head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>size;
+                head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>sum;
+            }
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_delete</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> cur, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length)
+{
+    <span style=color:#66d9ef>if</span> (length <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>));
+            splay_remove(head<span style=color:#f92672>-&gt;</span>l_child);
+            head<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> NULL;
+            head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> head<span style=color:#f92672>-&gt;</span>val;
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            splay_remove(head);
+            head <span style=color:#f92672>=</span> NULL;
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head <span style=color:#f92672>=</span> splay_route(splay_find(cur <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>));
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+            splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, head<span style=color:#f92672>-&gt;</span>r_child));
+            attach_as_r_child(head, tmp);
+            tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>-=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size;
+            tmp<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>-=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+            head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>-=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size;
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>-=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+            splay_remove(tmp<span style=color:#f92672>-&gt;</span>l_child);
+            tmp<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> NULL;
+            splay_update_max(tmp);
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>-=</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size;
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>-=</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+            splay_remove(head<span style=color:#f92672>-&gt;</span>r_child);
+            head<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> NULL;
+            splay_update_max(head);
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_make</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> cur, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> change_num)
+{
+    <span style=color:#66d9ef>if</span> (length <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>));
+            splay_change(head<span style=color:#f92672>-&gt;</span>l_child, change_num);
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> head<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> head<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> (head<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>);
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            splay_change(head, change_num);
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head <span style=color:#f92672>=</span> splay_route(splay_find(cur <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>));
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+            splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, head<span style=color:#f92672>-&gt;</span>r_child));
+            attach_as_r_child(head, tmp);
+            splay_change(tmp<span style=color:#f92672>-&gt;</span>l_child, change_num);
+            tmp<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>+</span> tmp<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> (tmp<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> tmp<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>);
+            splay_update_max(tmp);
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> (head<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> head<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> head<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> tmp<span style=color:#f92672>-&gt;</span>sum;
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            splay_change(head<span style=color:#f92672>-&gt;</span>r_child, change_num);
+            head<span style=color:#f92672>-&gt;</span>sum <span style=color:#f92672>=</span> (head<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>?</span> head<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum : <span style=color:#ae81ff>0</span>) <span style=color:#f92672>+</span> head<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>+</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+            splay_update_max(head);
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_reverse</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> cur, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length)
+{
+    <span style=color:#66d9ef>if</span> (length <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>));
+            splay_swap(head<span style=color:#f92672>-&gt;</span>l_child);
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            splay_swap(head);
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head <span style=color:#f92672>=</span> splay_route(splay_find(cur <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>));
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+            splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, head<span style=color:#f92672>-&gt;</span>r_child));
+            attach_as_r_child(head, tmp);
+            splay_swap(tmp<span style=color:#f92672>-&gt;</span>l_child);
+            splay_update_max(tmp);
+            splay_update_max(head);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            splay_swap(head<span style=color:#f92672>-&gt;</span>r_child);
+            splay_update_max(head);
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_sum</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> cur, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> length)
+{
+    <span style=color:#66d9ef>if</span> (length <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    }
+    <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>));
+            <span style=color:#66d9ef>return</span> head<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>return</span> head<span style=color:#f92672>-&gt;</span>sum;
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head <span style=color:#f92672>=</span> splay_route(splay_find(cur <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>));
+        <span style=color:#66d9ef>if</span> (head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>&gt;</span> length)
+        {
+            head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+            splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> splay_route(splay_find(length <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, head<span style=color:#f92672>-&gt;</span>r_child));
+            attach_as_r_child(head, tmp);
+            <span style=color:#66d9ef>return</span> tmp<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>return</span> head<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_max</span>()
+{
+    <span style=color:#66d9ef>return</span> head<span style=color:#f92672>-&gt;</span>max_sum;
+}
+
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_check</span>(splay_node <span style=color:#f92672>*</span>root <span style=color:#f92672>=</span> head, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>bool</span> down_change <span style=color:#f92672>=</span> false, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> change_num <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>bool</span> down_swap <span style=color:#f92672>=</span> false)
+{
+    <span style=color:#66d9ef>if</span> (root <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    <span style=color:#66d9ef>int</span> size <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>, sum <span style=color:#f92672>=</span> down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>val;
+    <span style=color:#66d9ef>if</span> ((root<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> (<span style=color:#f92672>!</span>down_swap))
+    {
+        <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> root)
+        {
+            printf(<span style=color:#e6db74>&#34;ERROR &#34;</span>);
+        }
+        splay_check(root<span style=color:#f92672>-&gt;</span>l_child, root<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>||</span> down_change, down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>change_num, down_swap <span style=color:#f92672>^</span> root<span style=color:#f92672>-&gt;</span>down_swap);
+        size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size;
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>root<span style=color:#f92672>-&gt;</span>down_change)
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>*</span> root<span style=color:#f92672>-&gt;</span>change_num;
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((root<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> down_swap)
+    {
+        <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> root)
+        {
+            printf(<span style=color:#e6db74>&#34;ERROR &#34;</span>);
+        }
+        splay_check(root<span style=color:#f92672>-&gt;</span>r_child, root<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>||</span> down_change, down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>change_num, down_swap <span style=color:#f92672>^</span> root<span style=color:#f92672>-&gt;</span>down_swap);
+        size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size;
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>root<span style=color:#f92672>-&gt;</span>down_change)
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>*</span> root<span style=color:#f92672>-&gt;</span>change_num;
+        }
+    }
+    printf(<span style=color:#e6db74>&#34;%d &#34;</span>, down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>val);
+    <span style=color:#66d9ef>if</span> ((root<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> (<span style=color:#f92672>!</span>down_swap))
+    {
+        <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> root)
+        {
+            printf(<span style=color:#e6db74>&#34;ERROR &#34;</span>);
+        }
+        splay_check(root<span style=color:#f92672>-&gt;</span>r_child, root<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>||</span> down_change, down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>change_num, down_swap <span style=color:#f92672>^</span> root<span style=color:#f92672>-&gt;</span>down_swap);
+        size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size;
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>root<span style=color:#f92672>-&gt;</span>down_change)
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>*</span> root<span style=color:#f92672>-&gt;</span>change_num;
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((root<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> down_swap)
+    {
+        <span style=color:#66d9ef>if</span> (root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> root)
+        {
+            printf(<span style=color:#e6db74>&#34;ERROR &#34;</span>);
+            exit(<span style=color:#ae81ff>0</span>);
+        }
+        splay_check(root<span style=color:#f92672>-&gt;</span>l_child, root<span style=color:#f92672>-&gt;</span>down_change <span style=color:#f92672>||</span> down_change, down_change <span style=color:#f92672>?</span> change_num : root<span style=color:#f92672>-&gt;</span>change_num, down_swap <span style=color:#f92672>^</span> root<span style=color:#f92672>-&gt;</span>down_swap);
+        size <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size;
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>root<span style=color:#f92672>-&gt;</span>down_change)
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>sum;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            sum <span style=color:#f92672>+=</span> root<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>*</span> root<span style=color:#f92672>-&gt;</span>change_num;
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((<span style=color:#f92672>!</span>down_change) <span style=color:#f92672>&amp;&amp;</span> (sum <span style=color:#f92672>!=</span> root<span style=color:#f92672>-&gt;</span>sum))
+    {
+        printf(<span style=color:#e6db74>&#34;ERROR_SUM &#34;</span>);
+        exit(<span style=color:#ae81ff>0</span>);
+    }
+    <span style=color:#66d9ef>if</span> (size <span style=color:#f92672>!=</span> root<span style=color:#f92672>-&gt;</span>size)
+    {
+        printf(<span style=color:#e6db74>&#34;ERROR_SIZE &#34;</span>);
+        exit(<span style=color:#ae81ff>0</span>);
+    }
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span><span style=color:#75715e>/*---splay---*/</span>
+
+<span style=color:#66d9ef>char</span> operator_string[<span style=color:#ae81ff>10</span>];
+<span style=color:#66d9ef>int</span> cur, length, change_num;
+
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> sum <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    ll start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;sequence.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+<span style=color:#75715e>#ifndef DEBUG_STD
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;sequence.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    fread(fread_string, <span style=color:#ae81ff>1</span>, MAXS, stdin);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    init_memory();
+    read(<span style=color:#f92672>&amp;</span>n);
+    read(<span style=color:#f92672>&amp;</span>m);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        read(insert_num <span style=color:#f92672>+</span> i);
+    }
+    splay_insert(<span style=color:#ae81ff>0</span>, n);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>    splay_check();
+    sum <span style=color:#f92672>=</span> n;
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+    {
+        read(operator_string);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (i <span style=color:#f92672>==</span> <span style=color:#ae81ff>31</span>)
+        {
+            printf(<span style=color:#e6db74>&#34;DEBUGn&#34;</span>);
+        }
+        printf(<span style=color:#e6db74>&#34;%d SUM:%d %s &#34;</span>, i, sum, operator_string);
+        <span style=color:#66d9ef>if</span> (sum <span style=color:#f92672>!=</span> head<span style=color:#f92672>-&gt;</span>size)
+        {
+            printf(<span style=color:#e6db74>&#34;nERROR_SUMn&#34;</span>);
+            exit(<span style=color:#ae81ff>0</span>);
+        }
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;S&#39;</span>)
+        {
+            read(<span style=color:#f92672>&amp;</span>cur);
+            read(<span style=color:#f92672>&amp;</span>length);
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;</span> length; j<span style=color:#f92672>++</span>)
+            {
+                read(insert_num <span style=color:#f92672>+</span> j);
+            }
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, length);
+            sum <span style=color:#f92672>+=</span> length;
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            splay_insert(cur, length);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;L&#39;</span>)
+        {
+            read(<span style=color:#f92672>&amp;</span>cur);
+            read(<span style=color:#f92672>&amp;</span>length);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, length);
+            sum <span style=color:#f92672>-=</span> length;
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            splay_delete(cur, length);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;K&#39;</span>)
+        {
+            read(<span style=color:#f92672>&amp;</span>cur);
+            read(<span style=color:#f92672>&amp;</span>length);
+            read(<span style=color:#f92672>&amp;</span>change_num);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, cur, length, change_num);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            splay_make(cur, length, change_num);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;V&#39;</span>)
+        {
+            read(<span style=color:#f92672>&amp;</span>cur);
+            read(<span style=color:#f92672>&amp;</span>length);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, length);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            splay_reverse(cur, length);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;T&#39;</span>)
+        {
+            read(<span style=color:#f92672>&amp;</span>cur);
+            read(<span style=color:#f92672>&amp;</span>length);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, length);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, splay_sum(cur, length));
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;X&#39;</span>)
+        {
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, splay_max());
+        }
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        splay_check();
+        printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    }
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;run time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    fclose(stdin);
+<span style=color:#75715e>#ifndef DEBUG_STD
+</span><span style=color:#75715e></span>    fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>int</span> n, m;
+<span style=color:#66d9ef>int</span> num_line[<span style=color:#ae81ff>1000</span>], tmp[<span style=color:#ae81ff>1000</span>];
+<span style=color:#66d9ef>int</span> length, cur, len, k;
+<span style=color:#66d9ef>char</span> operator_string[<span style=color:#ae81ff>10</span>];
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>printline</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;=</span> length; i<span style=color:#f92672>++</span>)
+    {
+        printf(<span style=color:#e6db74>&#34;%d &#34;</span>, num_line[i]);
+    }
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+}
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+    freopen(<span style=color:#e6db74>&#34;sequence2.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+    freopen(<span style=color:#e6db74>&#34;std.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+    scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>n, <span style=color:#f92672>&amp;</span>m);
+    length <span style=color:#f92672>=</span> n;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;=</span> length; i<span style=color:#f92672>++</span>)
+    {
+        scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, num_line <span style=color:#f92672>+</span> i);
+    }
+    printline();
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+    {
+        scanf(<span style=color:#e6db74>&#34;%s&#34;</span>, operator_string);
+        printf(<span style=color:#e6db74>&#34;%d SUM:%d %s &#34;</span>, i, length, operator_string);
+        <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;S&#39;</span>)
+        {
+            scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>cur, <span style=color:#f92672>&amp;</span>len);
+            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, len);
+            length <span style=color:#f92672>+=</span> len;
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> length; j <span style=color:#f92672>&gt;</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>--</span>)
+            {
+                num_line[j] <span style=color:#f92672>=</span> num_line[j <span style=color:#f92672>-</span> len];
+            }
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; j <span style=color:#f92672>&lt;=</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>++</span>)
+            {
+                scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, num_line <span style=color:#f92672>+</span> j);
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;L&#39;</span>)
+        {
+            scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>cur, <span style=color:#f92672>&amp;</span>len);
+            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, len);
+            length <span style=color:#f92672>-=</span> len;
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur; j <span style=color:#f92672>&lt;=</span> length; j<span style=color:#f92672>++</span>)
+            {
+                num_line[j] <span style=color:#f92672>=</span> num_line[j <span style=color:#f92672>+</span> len];
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;K&#39;</span>)
+        {
+            scanf(<span style=color:#e6db74>&#34;%d %d %d&#34;</span>, <span style=color:#f92672>&amp;</span>cur, <span style=color:#f92672>&amp;</span>len, <span style=color:#f92672>&amp;</span>k);
+            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, cur, len, k);
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur; j <span style=color:#f92672>&lt;</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>++</span>)
+            {
+                num_line[j] <span style=color:#f92672>=</span> k;
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;V&#39;</span>)
+        {
+            scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>cur, <span style=color:#f92672>&amp;</span>len);
+            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, len);
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur, k <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; j <span style=color:#f92672>&lt;</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>++</span>, k<span style=color:#f92672>++</span>)
+            {
+                tmp[k] <span style=color:#f92672>=</span> num_line[j];
+            }
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur, k <span style=color:#f92672>=</span> len; j <span style=color:#f92672>&lt;</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>++</span>, k<span style=color:#f92672>--</span>)
+            {
+                num_line[j] <span style=color:#f92672>=</span> tmp[k];
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;T&#39;</span>)
+        {
+            scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>cur, <span style=color:#f92672>&amp;</span>len);
+            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, cur, len);
+            <span style=color:#66d9ef>int</span> sum <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> cur; j <span style=color:#f92672>&lt;</span> cur <span style=color:#f92672>+</span> len; j<span style=color:#f92672>++</span>)
+            {
+                sum <span style=color:#f92672>+=</span> num_line[j];
+            }
+            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, sum);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (operator_string[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;X&#39;</span>)
+        {
+            printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+            printf(<span style=color:#e6db74>&#34;0n&#34;</span>);
+        }
+        printline();
+    }
+}
+
+<span style=color:#75715e>#endif
+</span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://www.sxn.dev/tags/bzoj>BZOJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/noi>NOI</a></span><span class=tag><a href=https://www.sxn.dev/tags/splay>SPLAY</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>2538 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2014-05-02 19:34 +0000</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.sxn.dev/posts/tyvj1728/><span class=button__icon>←</span>
+<span class=button__text>[BZOJ3223][TYVJ1728]普通平衡树（FANHQ_TREAP）</span></a></span>
+<span class="button next"><a href=https://www.sxn.dev/posts/ahoi2006-editor/><span class=button__text>[BZOJ1269][AHOI2006]文本编辑器（SPLAY）</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2020</span>
+<span><a href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank rel=noopener>CC BY-NC 4.0</a></span>
+<span><a href=https://www.sxn.dev/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><span>Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>Theme <a href=https://github.com/rhazdon/hugo-theme-hello-friend-ng>Hello Friend NG</a></span></div></div></footer></div><script type=text/javascript src=/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js integrity="sha512-3HFukJLJggt3+W2ilNASCu6xibW86pdSMJ6+on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script></body></html>

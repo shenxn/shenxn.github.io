@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>二分图 on SHENXN</title><link>https://www.sxn.dev/tags/%E4%BA%8C%E5%88%86%E5%9B%BE/</link><description>Recent content in 二分图 on SHENXN</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0&lt;/a></copyright><lastBuildDate>Thu, 22 May 2014 12:50:09 +0000</lastBuildDate><atom:link href="https://www.sxn.dev/tags/%E4%BA%8C%E5%88%86%E5%9B%BE/index.xml" rel="self" type="application/rss+xml"/><item><title>[POJ2195]Going Home（KM算法）</title><link>https://www.sxn.dev/posts/poj2195/</link><pubDate>Thu, 22 May 2014 12:50:09 +0000</pubDate><guid>https://www.sxn.dev/posts/poj2195/</guid><description>&lt;p>就是一道KM的模板题，而且建图已经非常显然了。关于KM算法：&lt;/p>
+&lt;blockquote>
+&lt;p>KM算法流程：&lt;/p>
+&lt;p>(1)初始化可行顶标值&lt;/p>
+&lt;p>(2)用匈牙利算法寻找完备匹配&lt;/p>
+&lt;p>(3)若未找到完备匹配则修改可行顶标的值&lt;/p>
+&lt;p>(4)重复(2)(3)直到找到相等子图的完备匹配为止
+上述内容转自：&lt;a href="http://www.360doc.com/content/11/0718/14/3701281_134273282.shtml">二分图匹配算法总结(phoenixinter)&lt;/a>，更详细的讲述详见原文。&lt;/p>
+&lt;/blockquote></description></item></channel></rss>

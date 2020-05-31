@@ -1,0 +1,687 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content><meta name=description content="平衡树三道题终于全A了。为什么说分块是伪呢，毕竟这是平衡树的题目，然后我用了分块（我弱啊，不会树套）。听说TY上还有大爷直接用sort A掉了，这算什么嘛，还有话说我BZOJ上A掉的代码在TY上死活RE30分，还WA了两个点。不管了。。"><meta name=keywords content=",BZOJ,TYVJ,分块"><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://www.sxn.dev/posts/tyvj1730/><title>[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪） :: SHENXN</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.dede02da9537a98158079c023e83573e18127834838ef08172acce888341a797.css><meta itemprop=name content="[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪）"><meta itemprop=description content="平衡树三道题终于全A了。为什么说分块是伪呢，毕竟这是平衡树的题目，然后我用了分块（我弱啊，不会树套）。听说TY上还有大爷直接用sort A掉了，这算什么嘛，还有话说我BZOJ上A掉的代码在TY上死活RE30分，还WA了两个点。不管了。。"><meta itemprop=datePublished content="2014-05-14T18:37:34+00:00"><meta itemprop=dateModified content="2014-05-14T18:37:34+00:00"><meta itemprop=wordCount content="1795"><meta itemprop=image content="https://www.sxn.dev"><meta itemprop=keywords content="BZOJ,TYVJ,分块,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.sxn.dev"><meta name=twitter:title content="[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪）"><meta name=twitter:description content="平衡树三道题终于全A了。为什么说分块是伪呢，毕竟这是平衡树的题目，然后我用了分块（我弱啊，不会树套）。听说TY上还有大爷直接用sort A掉了，这算什么嘛，还有话说我BZOJ上A掉的代码在TY上死活RE30分，还WA了两个点。不管了。。"><meta property="og:title" content="[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪）"><meta property="og:description" content="平衡树三道题终于全A了。为什么说分块是伪呢，毕竟这是平衡树的题目，然后我用了分块（我弱啊，不会树套）。听说TY上还有大爷直接用sort A掉了，这算什么嘛，还有话说我BZOJ上A掉的代码在TY上死活RE30分，还WA了两个点。不管了。。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.sxn.dev/posts/tyvj1730/"><meta property="og:image" content="https://www.sxn.dev"><meta property="article:published_time" content="2014-05-14T18:37:34+00:00"><meta property="article:modified_time" content="2014-05-14T18:37:34+00:00"><meta property="og:site_name" content="SHENXN"><meta property="article:section" content="OI"><meta property="article:published_time" content="2014-05-14 18:37:34 +0000 UTC"></head><body class=dark-theme><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__mark>></span>
+<span class=logo__text>cd ~</span>
+<span class=logo__cursor></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://www.sxn.dev/about>About</a></li><li><a href=https://www.sxn.dev/posts>Blog</a></li><li><a href=https://www.sxn.dev/projects>Projects</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41C32.4934 41 41 32.4934 41 22 41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>9 minutes</p></div><article><h1 class=post-title><a href=https://www.sxn.dev/posts/tyvj1730/>[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪）</a></h1><div class=post-content><p>平衡树三道题终于全A了。为什么说分块是伪呢，毕竟这是平衡树的题目，然后我用了分块（我弱啊，不会树套）。听说TY上还有大爷直接用sort A掉了，这算什么嘛，还有话说我BZOJ上A掉的代码在TY上死活RE30分，还WA了两个点。不管了。。</p><p>分块的话没什么好说的，就一个带修改的区间第K大，直接上代码</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#75715e>//tyvj 1730.cpp
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdlib&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;map&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXS <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>1024</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>1024</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>100000</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAX_LENGTH_BLOCK <span style=color:#f92672>=</span> <span style=color:#ae81ff>500</span>;
+
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e>#define LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e>//#define LOCAL_SIMP
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable:4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//char fread_string[MAXS];
+</span><span style=color:#75715e>//char *fread_point = fread_string;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>char</span> fread_point;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>bool</span> sign <span style=color:#f92672>=</span> false;
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;-&#39;</span>))
+    {
+        <span style=color:#66d9ef>if</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;-&#39;</span>)
+        {
+            sign <span style=color:#f92672>=</span> true;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            sign <span style=color:#f92672>=</span> false;
+        }
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> fread_point <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>if</span> (sign)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span>ret;
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> ll;
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>block_node</span>
+{
+    <span style=color:#66d9ef>int</span> val[MAX_LENGTH_BLOCK];
+    <span style=color:#66d9ef>int</span> order[MAX_LENGTH_BLOCK];
+    <span style=color:#66d9ef>int</span> size;
+};
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>min</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> a, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> b)
+{
+    <span style=color:#66d9ef>if</span> (a <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>return</span> b;
+    }
+    <span style=color:#66d9ef>if</span> (b <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+    {
+        <span style=color:#66d9ef>return</span> a;
+    }
+    <span style=color:#66d9ef>return</span> a <span style=color:#f92672>&lt;</span> b <span style=color:#f92672>?</span> a : b;
+}
+
+block_node block_list[MAXN <span style=color:#f92672>/</span> MAX_LENGTH_BLOCK];
+
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> OP_Q_RANK <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> OP_Q_NUM <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> OP_CHANGE <span style=color:#f92672>=</span> <span style=color:#ae81ff>3</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> OP_PREV <span style=color:#f92672>=</span> <span style=color:#ae81ff>4</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> OP_NEXT <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>;
+
+<span style=color:#66d9ef>int</span> n, m;
+<span style=color:#66d9ef>int</span> init_read[MAXN];
+<span style=color:#66d9ef>int</span> op, op_l, op_r, k;
+<span style=color:#66d9ef>int</span> num_max <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>, num_min <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>block_init</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> n)
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>, j <span style=color:#f92672>+=</span> MAX_LENGTH_BLOCK)
+    {
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> t <span style=color:#f92672>=</span> j; t <span style=color:#f92672>&lt;</span> j <span style=color:#f92672>+</span> MAX_LENGTH_BLOCK, t <span style=color:#f92672>&lt;</span> n; t<span style=color:#f92672>++</span>)
+        {
+            block_list[i].val[t <span style=color:#f92672>-</span> j] <span style=color:#f92672>=</span> init_read[t];
+        }
+        block_list[i].size <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>min(MAX_LENGTH_BLOCK, n <span style=color:#f92672>-</span> j);
+        memcpy(block_list[i].order, block_list[i].val, block_list[i].size <span style=color:#f92672>*</span> <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>));
+        std<span style=color:#f92672>::</span>sort(block_list[i].order, block_list[i].order <span style=color:#f92672>+</span> block_list[i].size);
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_find</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>x)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> x <span style=color:#f92672>/</span> MAX_LENGTH_BLOCK;
+    x <span style=color:#f92672>%=</span> MAX_LENGTH_BLOCK;
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_smaller</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> l <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, r <span style=color:#f92672>=</span> block_list[block].size;
+    <span style=color:#66d9ef>int</span> mid;
+    <span style=color:#66d9ef>while</span> (l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;</span> r)
+    {
+        mid <span style=color:#f92672>=</span> (l <span style=color:#f92672>+</span> r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (block_list[block].order[mid] <span style=color:#f92672>&gt;=</span> val)
+        {
+            r <span style=color:#f92672>=</span> mid;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            l <span style=color:#f92672>=</span> mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+    }
+    <span style=color:#66d9ef>while</span> ((l <span style=color:#f92672>&lt;</span> block_list[block].size) <span style=color:#f92672>&amp;&amp;</span> (block_list[block].order[l] <span style=color:#f92672>&lt;</span> val))
+    {
+        l<span style=color:#f92672>++</span>;
+    }
+    <span style=color:#66d9ef>return</span> l;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_query_smaller</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> l; i <span style=color:#f92672>&lt;=</span> r; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (block_list[block].val[i] <span style=color:#f92672>&lt;</span> val)
+        {
+            ret<span style=color:#f92672>++</span>;
+        }
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_b_smaller</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> binary_l <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, binary_r <span style=color:#f92672>=</span> block_list[block].size, mid;
+    <span style=color:#66d9ef>while</span> (binary_l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;</span> binary_r)
+    {
+        mid <span style=color:#f92672>=</span> (binary_l <span style=color:#f92672>+</span> binary_r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (block_list[block].order[mid] <span style=color:#f92672>&gt;=</span> val)
+        {
+            binary_r <span style=color:#f92672>=</span> mid;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            binary_l <span style=color:#f92672>=</span> mid;
+        }
+    }
+    <span style=color:#75715e>/*while ((binary_l &lt; block_list[block].size - 1) &amp;&amp; (block_list[block].order[binary_l + 1] &lt; val))
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        binary_l++;
+</span><span style=color:#75715e>    }*/</span>
+    <span style=color:#66d9ef>while</span> ((binary_l <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (block_list[block].order[binary_l] <span style=color:#f92672>&gt;=</span> val))
+    {
+        binary_l<span style=color:#f92672>--</span>;
+    }
+    <span style=color:#66d9ef>if</span> (block_list[block].order[binary_l] <span style=color:#f92672>&gt;=</span> val)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    }
+    <span style=color:#66d9ef>return</span> block_list[block].order[binary_l];
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_query_b_smaller</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> max_num <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> l; i <span style=color:#f92672>&lt;=</span> r; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (block_list[block].val[i] <span style=color:#f92672>&lt;</span> val)
+        {
+            max_num <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(max_num, block_list[block].val[i]);
+        }
+    }
+    <span style=color:#66d9ef>return</span> max_num;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_s_bigger</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> binary_l <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, binary_r <span style=color:#f92672>=</span> block_list[block].size, mid;
+    <span style=color:#66d9ef>while</span> (binary_l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;</span> binary_r)
+    {
+        mid <span style=color:#f92672>=</span> (binary_l <span style=color:#f92672>+</span> binary_r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (block_list[block].order[mid] <span style=color:#f92672>&gt;</span> val)
+        {
+            binary_r <span style=color:#f92672>=</span> mid;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            binary_l <span style=color:#f92672>=</span> mid;
+        }
+    }
+    <span style=color:#66d9ef>while</span> ((binary_l <span style=color:#f92672>&lt;</span> block_list[block].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>&amp;&amp;</span> (block_list[block].order[binary_l] <span style=color:#f92672>&lt;=</span> val))
+    {
+        binary_l<span style=color:#f92672>++</span>;
+    }
+    <span style=color:#66d9ef>if</span> (block_list[block].order[binary_l] <span style=color:#f92672>&lt;=</span> val)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    }
+    <span style=color:#66d9ef>return</span> block_list[block].order[binary_l];
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_query_s_bigger</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> block, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> min_num <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> l; i <span style=color:#f92672>&lt;=</span> r; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (block_list[block].val[i] <span style=color:#f92672>&gt;</span> val)
+        {
+            min_num <span style=color:#f92672>=</span> min(min_num, block_list[block].val[i]);
+        }
+    }
+    <span style=color:#66d9ef>return</span> min_num;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_query_rank</span>(<span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> block_l <span style=color:#f92672>=</span> block_find(l);
+    <span style=color:#66d9ef>int</span> block_r <span style=color:#f92672>=</span> block_find(r);
+    <span style=color:#66d9ef>if</span> (block_l <span style=color:#f92672>==</span> block_r)
+    {
+        <span style=color:#66d9ef>if</span> ((l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (r <span style=color:#f92672>==</span> block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>))
+        {
+            <span style=color:#66d9ef>return</span> block_smaller(block_l, val) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>return</span> block_query_smaller(block_l, l, r, val) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+        <span style=color:#66d9ef>if</span> (l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+        {
+            ret <span style=color:#f92672>+=</span> block_smaller(block_l, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>+=</span> block_query_smaller(block_l, l, block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, val);
+        }
+        <span style=color:#66d9ef>if</span> (r <span style=color:#f92672>==</span> block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>)
+        {
+            ret <span style=color:#f92672>+=</span> block_smaller(block_r, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>+=</span> block_query_smaller(block_r, <span style=color:#ae81ff>0</span>, r, val);
+        }
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> block_l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> block_r; i<span style=color:#f92672>++</span>)
+        {
+            ret <span style=color:#f92672>+=</span> block_smaller(i, val);
+        }
+        <span style=color:#66d9ef>return</span> ret <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_query_num</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+    <span style=color:#66d9ef>int</span> binary_l <span style=color:#f92672>=</span> num_min, binary_r <span style=color:#f92672>=</span> num_max, mid;
+    <span style=color:#66d9ef>int</span> ret;
+    <span style=color:#66d9ef>while</span> (binary_l <span style=color:#f92672>&lt;</span> binary_r)
+    {
+        mid <span style=color:#f92672>=</span> (binary_l <span style=color:#f92672>+</span> binary_r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+        ret <span style=color:#f92672>=</span> block_query_rank(l, r, mid) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> ((ret <span style=color:#f92672>&lt;</span> k) <span style=color:#f92672>&amp;&amp;</span> (block_query_rank(l, r, mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>&gt;</span> k))
+        {
+            <span style=color:#66d9ef>return</span> mid;
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>&lt;</span> k)
+        {
+            binary_l <span style=color:#f92672>=</span> mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            binary_r <span style=color:#f92672>=</span> mid <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>;
+        }
+    }
+    <span style=color:#66d9ef>return</span> binary_l;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>block_change</span>(<span style=color:#66d9ef>int</span> pt, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> block_pt <span style=color:#f92672>=</span> block_find(pt);
+    <span style=color:#66d9ef>if</span> (block_list[block_pt].val[pt] <span style=color:#f92672>==</span> val)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    <span style=color:#66d9ef>int</span> binary_l <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, binary_r <span style=color:#f92672>=</span> block_list[block_pt].size, mid;
+    <span style=color:#66d9ef>int</span> loop <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    <span style=color:#75715e>/*while (binary_l + 1 &lt; binary_r)
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        mid = (binary_l + binary_r) &gt;&gt; 1;
+</span><span style=color:#75715e>        if (block_list[block_pt].order[mid] == block_list[block_pt].val[pt])
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            loop = mid;
+</span><span style=color:#75715e>            break;
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>        else if (block_list[block_pt].order[mid] &gt; block_list[block_pt].val[pt])
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            binary_l = mid;
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>        else
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            binary_r = mid;
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>    }*/</span>
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> block_list[block_pt].size; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (block_list[block_pt].order[i] <span style=color:#f92672>==</span> block_list[block_pt].val[pt])
+        {
+            loop <span style=color:#f92672>=</span> i;
+        }
+    }
+    <span style=color:#66d9ef>if</span> (loop <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+    {
+        loop <span style=color:#f92672>=</span> binary_l;
+    }
+    <span style=color:#66d9ef>if</span> (block_list[block_pt].val[pt] <span style=color:#f92672>&lt;</span> val)
+    {
+        <span style=color:#66d9ef>while</span> ((loop <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;</span> block_list[block_pt].size) <span style=color:#f92672>&amp;&amp;</span> (block_list[block_pt].order[loop <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>&lt;</span> val))
+        {
+            block_list[block_pt].order[loop] <span style=color:#f92672>=</span> block_list[block_pt].order[loop <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>];
+            loop<span style=color:#f92672>++</span>;
+        }
+        block_list[block_pt].order[loop] <span style=color:#f92672>=</span> val;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>while</span> ((loop <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (block_list[block_pt].order[loop <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>&gt;</span> val))
+        {
+            block_list[block_pt].order[loop] <span style=color:#f92672>=</span> block_list[block_pt].order[loop <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>];
+            loop<span style=color:#f92672>--</span>;
+        }
+        block_list[block_pt].order[loop] <span style=color:#f92672>=</span> val;
+    }
+    block_list[block_pt].val[pt] <span style=color:#f92672>=</span> val;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_prev</span>(<span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> block_l <span style=color:#f92672>=</span> block_find(l);
+    <span style=color:#66d9ef>int</span> block_r <span style=color:#f92672>=</span> block_find(r);
+    <span style=color:#66d9ef>if</span> (block_l <span style=color:#f92672>==</span> block_r)
+    {
+        <span style=color:#66d9ef>if</span> ((l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (r <span style=color:#f92672>==</span> block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>))
+        {
+            <span style=color:#66d9ef>return</span> block_b_smaller(block_l, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>return</span> block_query_b_smaller(block_l, l, r, val);
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>int</span> ret;
+        <span style=color:#66d9ef>if</span> (l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+        {
+            ret <span style=color:#f92672>=</span> block_b_smaller(block_l, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>=</span> block_query_b_smaller(block_l, l, block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, val);
+        }
+        <span style=color:#66d9ef>if</span> (r <span style=color:#f92672>==</span> block_list[block_r].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>)
+        {
+            ret <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(ret, block_b_smaller(block_r, val));
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(ret, block_query_b_smaller(block_r, <span style=color:#ae81ff>0</span>, r, val));
+        }
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> block_l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> block_r; i<span style=color:#f92672>++</span>)
+        {
+            ret <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(ret, block_b_smaller(i, val));
+            <span style=color:#75715e>//ret = std::max(ret, block_query_b_smaller(i, 0, block_list[block_l].size - 1, val));
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>return</span> ret;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>block_next</span>(<span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    <span style=color:#66d9ef>int</span> block_l <span style=color:#f92672>=</span> block_find(l);
+    <span style=color:#66d9ef>int</span> block_r <span style=color:#f92672>=</span> block_find(r);
+    <span style=color:#66d9ef>if</span> (block_l <span style=color:#f92672>==</span> block_r)
+    {
+        <span style=color:#66d9ef>if</span> ((l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (r <span style=color:#f92672>==</span> block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>))
+        {
+            <span style=color:#66d9ef>return</span> block_s_bigger(block_l, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>return</span> block_query_s_bigger(block_l, l, r, val);
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>int</span> ret;
+        <span style=color:#66d9ef>if</span> (l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+        {
+            ret <span style=color:#f92672>=</span> block_s_bigger(block_l, val);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>=</span> block_query_s_bigger(block_l, l, block_list[block_l].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, val);
+        }
+        <span style=color:#66d9ef>if</span> (r <span style=color:#f92672>==</span> block_list[block_r].size <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>)
+        {
+            ret <span style=color:#f92672>=</span> min(ret, block_s_bigger(block_r, val));
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            ret <span style=color:#f92672>=</span> min(ret, block_query_s_bigger(block_r, <span style=color:#ae81ff>0</span>, r, val));
+        }
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> block_l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> block_r; i<span style=color:#f92672>++</span>)
+        {
+            ret <span style=color:#f92672>=</span> min(ret, block_s_bigger(i, val));
+        }
+        <span style=color:#66d9ef>return</span> ret;
+    }
+}
+
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>checker</span>()
+{
+    <span style=color:#66d9ef>int</span> loop <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>int</span> pt <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (pt <span style=color:#f92672>&gt;=</span> block_list[loop].size)
+        {
+            pt <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+            loop<span style=color:#f92672>++</span>;
+        }
+        printf(<span style=color:#e6db74>&#34;%d &#34;</span>, block_list[loop].val[pt]);
+        pt<span style=color:#f92672>++</span>;
+    }
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifndef LOCAL_SIMP
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    ll start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;input4.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+    freopen(<span style=color:#e6db74>&#34;3196.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    fread_point <span style=color:#f92672>=</span> getchar();
+    read(n);
+    read(m);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        read(init_read[i]);
+        num_max <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(num_max, init_read[i]);
+        num_min <span style=color:#f92672>=</span> min(num_min, init_read[i]);
+    }
+    block_init(n);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+    {
+        read(op);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        printf(<span style=color:#e6db74>&#34;%d %d &#34;</span>, i, op);
+        <span style=color:#66d9ef>if</span> (i <span style=color:#f92672>==</span> <span style=color:#ae81ff>446</span>)
+        {
+            <span style=color:#75715e>//printf(&#34;DEBUG &#34;);
+</span><span style=color:#75715e></span>        }
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_Q_RANK)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifndef LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, block_query_rank(op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, op_r <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k));
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_Q_NUM)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifndef LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, block_query_num(op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, op_r <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k));
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_CHANGE)
+        {
+            read(op_l);
+            read(k);
+            num_max <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(num_max, k);
+            num_min <span style=color:#f92672>=</span> min(num_min, k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, op_l, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            block_change(op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_PREV)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span><span style=color:#75715e>//#ifndef LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, block_prev(op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, op_r <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k));
+<span style=color:#75715e>//#endif
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_NEXT)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span><span style=color:#75715e>//#ifndef LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, block_next(op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, op_r <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k));
+<span style=color:#75715e>//#endif
+</span><span style=color:#75715e></span>        }
+<span style=color:#75715e>#ifdef LOCAL_DEBUG_NOUT
+</span><span style=color:#75715e></span>        checker();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    }
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;run time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    fclose(stdin);
+    fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+    freopen(<span style=color:#e6db74>&#34;3196.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+    freopen(<span style=color:#e6db74>&#34;3196simp.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+    fread_point <span style=color:#f92672>=</span> getchar();
+    read(n);
+    read(m);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        read(init_read[i]);
+        num_max <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(num_max, init_read[i]);
+        num_min <span style=color:#f92672>=</span> min(num_min, init_read[i]);
+    }
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+    {
+        read(op);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        printf(<span style=color:#e6db74>&#34;%d %d &#34;</span>, i, op);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_Q_RANK)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_Q_NUM)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_CHANGE)
+        {
+            read(op_l);
+            read(k);
+            num_max <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(num_max, k);
+            num_min <span style=color:#f92672>=</span> min(num_min, k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, op_l, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            init_read[op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> k;
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_PREV)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>int</span> max_num <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> op_r; i<span style=color:#f92672>++</span>)
+            {
+                <span style=color:#66d9ef>if</span> (init_read[i] <span style=color:#f92672>&lt;</span> k)
+                {
+                    max_num <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>max(max_num, init_read[i]);
+                }
+            }
+            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, max_num);
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op <span style=color:#f92672>==</span> OP_NEXT)
+        {
+            read(op_l);
+            read(op_r);
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, op_l, op_r, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>int</span> min_num <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> op_l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> op_r; i<span style=color:#f92672>++</span>)
+            {
+                <span style=color:#66d9ef>if</span> (init_read[i] <span style=color:#f92672>&gt;</span> k)
+                {
+                    min_num <span style=color:#f92672>=</span> min(min_num, init_read[i]);
+                }
+            }
+            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, min_num);
+        }
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;</span> n; j<span style=color:#f92672>++</span>)
+        {
+            printf(<span style=color:#e6db74>&#34;%d &#34;</span>, init_read[j]);
+        }
+        printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+    }
+    fclose(stdin);
+    fclose(stdout);
+}
+<span style=color:#75715e>#endif
+</span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://www.sxn.dev/tags/bzoj>BZOJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/tyvj>TYVJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/%E5%88%86%E5%9D%97>分块</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>1795 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2014-05-14 18:37 +0000</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.sxn.dev/posts/haoi2008-rank/><span class=button__icon>←</span>
+<span class=button__text>[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH）</span></a></span>
+<span class="button next"><a href=https://www.sxn.dev/posts/bzoj3337/><span class=button__text>[BZOJ3337]ORZJRY I（块状链表）</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2020</span>
+<span><a href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank rel=noopener>CC BY-NC 4.0</a></span>
+<span><a href=https://www.sxn.dev/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><span>Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>Theme <a href=https://github.com/rhazdon/hugo-theme-hello-friend-ng>Hello Friend NG</a></span></div></div></footer></div><script type=text/javascript src=/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js integrity="sha512-3HFukJLJggt3+W2ilNASCu6xibW86pdSMJ6+on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script></body></html>

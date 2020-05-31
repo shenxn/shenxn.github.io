@@ -1,0 +1,303 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content><meta name=description content="这题很显然是一道最小割的题目，然后题目只要求最小割的容量，那么直接跑个最大流（关于最小割-最大流定理请自行谷歌），以前写过DINIC感觉不够高大上，然后果断来一个最高标号预流推进秀优越，事实上这个时间复杂度的确很优秀。一开始我写的没加GAP优化，400+ms，跑得比DINIC还慢，真是不爽，下午看到了一种叫GAP优化的东西，加上之后就28ms了，怒刷到rank2。"><meta name=keywords content=",BZOJ,GAP优化,JLOI,最大流,最高标号预流推进"><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://www.sxn.dev/posts/jloi2010-champion/><title>[BZOJ2768][JLOI2010]冠军调查（最大流 最高标号预流推进 + GAP优化） :: SHENXN</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.dede02da9537a98158079c023e83573e18127834838ef08172acce888341a797.css><meta itemprop=name content="[BZOJ2768][JLOI2010]冠军调查（最大流 最高标号预流推进 + GAP优化）"><meta itemprop=description content="这题很显然是一道最小割的题目，然后题目只要求最小割的容量，那么直接跑个最大流（关于最小割-最大流定理请自行谷歌），以前写过DINIC感觉不够高大上，然后果断来一个最高标号预流推进秀优越，事实上这个时间复杂度的确很优秀。一开始我写的没加GAP优化，400+ms，跑得比DINIC还慢，真是不爽，下午看到了一种叫GAP优化的东西，加上之后就28ms了，怒刷到rank2。"><meta itemprop=datePublished content="2014-05-20T15:10:36+00:00"><meta itemprop=dateModified content="2014-05-20T15:10:36+00:00"><meta itemprop=wordCount content="716"><meta itemprop=image content="https://www.sxn.dev"><meta itemprop=keywords content="BZOJ,GAP优化,JLOI,最大流,最高标号预流推进,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.sxn.dev"><meta name=twitter:title content="[BZOJ2768][JLOI2010]冠军调查（最大流 最高标号预流推进 + GAP优化）"><meta name=twitter:description content="这题很显然是一道最小割的题目，然后题目只要求最小割的容量，那么直接跑个最大流（关于最小割-最大流定理请自行谷歌），以前写过DINIC感觉不够高大上，然后果断来一个最高标号预流推进秀优越，事实上这个时间复杂度的确很优秀。一开始我写的没加GAP优化，400+ms，跑得比DINIC还慢，真是不爽，下午看到了一种叫GAP优化的东西，加上之后就28ms了，怒刷到rank2。"><meta property="og:title" content="[BZOJ2768][JLOI2010]冠军调查（最大流 最高标号预流推进 + GAP优化）"><meta property="og:description" content="这题很显然是一道最小割的题目，然后题目只要求最小割的容量，那么直接跑个最大流（关于最小割-最大流定理请自行谷歌），以前写过DINIC感觉不够高大上，然后果断来一个最高标号预流推进秀优越，事实上这个时间复杂度的确很优秀。一开始我写的没加GAP优化，400+ms，跑得比DINIC还慢，真是不爽，下午看到了一种叫GAP优化的东西，加上之后就28ms了，怒刷到rank2。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.sxn.dev/posts/jloi2010-champion/"><meta property="og:image" content="https://www.sxn.dev"><meta property="article:published_time" content="2014-05-20T15:10:36+00:00"><meta property="article:modified_time" content="2014-05-20T15:10:36+00:00"><meta property="og:site_name" content="SHENXN"><meta property="article:section" content="OI"><meta property="article:published_time" content="2014-05-20 15:10:36 +0000 UTC"></head><body class=dark-theme><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__mark>></span>
+<span class=logo__text>cd ~</span>
+<span class=logo__cursor></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://www.sxn.dev/about>About</a></li><li><a href=https://www.sxn.dev/posts>Blog</a></li><li><a href=https://www.sxn.dev/projects>Projects</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41C32.4934 41 41 32.4934 41 22 41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>4 minutes</p></div><article><h1 class=post-title><a href=https://www.sxn.dev/posts/jloi2010-champion/>[BZOJ2768][JLOI2010]冠军调查（最大流 最高标号预流推进 + GAP优化）</a></h1><div class=post-content><p>这题很显然是一道最小割的题目，然后题目只要求最小割的容量，那么直接跑个最大流（关于最小割-最大流定理请自行谷歌），以前写过DINIC感觉不够高大上，然后果断来一个最高标号预流推进秀优越，事实上这个时间复杂度的确很优秀。一开始我写的没加GAP优化，400+ms，跑得比DINIC还慢，真是不爽，下午看到了一种叫GAP优化的东西，加上之后就28ms了，怒刷到rank2。</p><blockquote><p>预流推进算法给每一个顶点一个标号h(v)，表示该点到t的最短路（在残量网络中）。
+>
+第一步hights()过程，就是BFS出初始最短路，计算出每一个顶点的h(v)。</p><p>预流推进算法的特征是运用了预流来加快运算。预流说明图中的节点(除s, t)，仅需要满足流入量 >= 流出量。其中流入量>流出量的接点，我们称之为活动节点。我们的算法就是不断地将活动结点，变为非活动结点，使得预流成为可行流。</p><p>算法过程prepare()，即首先将与s相连的边设为满流，并将这时产生的活动结点加入队列Q。这是算法的开始。
+>
+以后便重复以下过程直到Q为空：
+>
+(1).选出Q的一个活动顶点u。并依次判断残量网络G&rsquo;中每条边(u, v)，若h(u) = h(v) + 1，则顺着这里条边推流，直到Q变成非活动结点（不存在多余流量）。(Push推流过程)
+>
+(2).如果u还是活动结点。则需要对u进行重新标号：h(u) = min{h(v) + 1}，其中边(u,v)存在于G&rsquo; 中。然后再将u加入队列。(reCalc过程)</p><p>可以证明，通过以上算法得到的结果就是最大流。
+>
+如果该算法的Q是标准的FIFO队列，则时间复杂度为(n2m)，如果是优先队列，并且标号最高的点优先的话：我们就得到了最高标号预流推进算法，其时间复杂度仅为(n2sqrt(m))，算是比较快的最大流算法了。
+以上内容摘自雅礼中学ZQM的网络流PPT：<a href=http://shenxn-others.qiniudn.com/%E7%BD%91%E7%BB%9C%E6%B5%81%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98.ppt>网络流算法专题.ppt</a></p></blockquote><p>而关于GAP优化，我们需要一个GAP数组记录每层的节点数，当一个层的节点数变为零时，即分层图中出现了空隙，在GAP以上的所有点的预流已经不可能成为可行流，那就将它们从队列中取出，并将它们的高度修改为size以免再次被加入队列。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#75715e>//JLOI2010 champion.cpp
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdlib&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;map&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;set&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>310</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXM <span style=color:#f92672>=</span> <span style=color:#ae81ff>100000</span>;
+
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_DEBUG
+</span><span style=color:#75715e>//#define STD_DEBUG
+</span><span style=color:#75715e>//#define DATA
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable: 4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#66d9ef>char</span> fread_char;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fread_init</span>()
+{
+    fread_char <span style=color:#f92672>=</span> getchar();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((fread_char <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (fread_char <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        fread_char <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>while</span> ((fread_char <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_char <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> fread_char <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+        fread_char <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>int</span> n, m;
+<span style=color:#66d9ef>int</span> k;
+<span style=color:#66d9ef>int</span> s, t;
+<span style=color:#66d9ef>int</span> x, y;
+<span style=color:#66d9ef>int</span> map[MAXN][MAXN];
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>node_node</span>
+{
+    <span style=color:#66d9ef>int</span> id, height;
+    <span style=color:#66d9ef>inline</span> <span style=color:#a6e22e>node_node</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> id_ <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> height_ <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>)
+    {
+        id <span style=color:#f92672>=</span> id_;
+        height <span style=color:#f92672>=</span> height_;
+    }
+    <span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>bool</span> <span style=color:#66d9ef>operator</span> <span style=color:#f92672>&lt;</span> (<span style=color:#66d9ef>const</span> node_node <span style=color:#f92672>&amp;</span>b) <span style=color:#66d9ef>const</span>
+    {
+        <span style=color:#66d9ef>return</span> height <span style=color:#f92672>&lt;</span> b.height;
+    }
+};
+
+<span style=color:#66d9ef>bool</span> visit[MAXN];
+<span style=color:#66d9ef>int</span> inflow[MAXN], height[MAXN];
+std<span style=color:#f92672>::</span>priority_queue <span style=color:#f92672>&lt;</span>node_node<span style=color:#f92672>&gt;</span> Q;
+
+<span style=color:#66d9ef>int</span> gap[MAXN];
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>add_edge</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> u, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> v, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> d, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>bool</span> both_way <span style=color:#f92672>=</span> false)
+{
+    map[u][v] <span style=color:#f92672>=</span> d;
+    map[v][u] <span style=color:#f92672>=</span> both_way <span style=color:#f92672>?</span> d : <span style=color:#ae81ff>0</span>;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>bfs</span>()
+{
+    std<span style=color:#f92672>::</span>queue <span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> bfs_q;
+    bfs_q.push(t);
+    <span style=color:#66d9ef>int</span> tmp;
+    gap[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>while</span> (<span style=color:#f92672>!</span>bfs_q.empty())
+    {
+        tmp <span style=color:#f92672>=</span> bfs_q.front();
+        bfs_q.pop();
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> s; i <span style=color:#f92672>&lt;=</span> t; i<span style=color:#f92672>++</span>)
+        {
+            <span style=color:#66d9ef>if</span> ((<span style=color:#f92672>!</span>visit[i]) <span style=color:#f92672>&amp;&amp;</span> (map[i][tmp] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>))
+            {
+                height[i] <span style=color:#f92672>=</span> height[tmp] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+                gap[height[i]]<span style=color:#f92672>++</span>;
+                visit[i] <span style=color:#f92672>=</span> true;
+                bfs_q.push(i);
+            }
+        }
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>max_flow</span>()
+{
+    memset(visit, false, <span style=color:#66d9ef>sizeof</span>(visit));
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> s <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;</span> t; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (map[s][i] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)
+        {
+            inflow[i] <span style=color:#f92672>=</span> map[s][i];
+            map[i][s] <span style=color:#f92672>+=</span> inflow[i];
+            map[s][i] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+            Q.push(node_node(i, height[i]));
+            visit[i] <span style=color:#f92672>=</span> true;
+        }
+    }
+    node_node tmp;
+    <span style=color:#66d9ef>int</span> push_flow <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>int</span> min_height <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+    visit[t] <span style=color:#f92672>=</span> true;
+    <span style=color:#66d9ef>while</span> (<span style=color:#f92672>!</span>Q.empty())
+    {
+        tmp <span style=color:#f92672>=</span> Q.top();
+        Q.pop();
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        printf(<span style=color:#e6db74>&#34;POP ID HEIGHT INFLOW: %d %d %dn&#34;</span>, tmp.id, tmp.height, inflow[tmp.id]);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        visit[tmp.id] <span style=color:#f92672>=</span> false;
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> s <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; (i <span style=color:#f92672>&lt;=</span> t) <span style=color:#f92672>&amp;&amp;</span> (inflow[tmp.id] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>); i<span style=color:#f92672>++</span>)
+        {
+            <span style=color:#66d9ef>if</span> ((height[tmp.id] <span style=color:#f92672>==</span> height[i] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>&amp;&amp;</span> (map[tmp.id][i] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>))
+            {
+                push_flow <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>min(inflow[tmp.id], map[tmp.id][i]);
+                inflow[tmp.id] <span style=color:#f92672>-=</span> push_flow;
+                inflow[i] <span style=color:#f92672>+=</span> push_flow;
+                map[tmp.id][i] <span style=color:#f92672>-=</span> push_flow;
+                map[i][tmp.id] <span style=color:#f92672>+=</span> push_flow;
+                <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>visit[i])
+                {
+                    Q.push(node_node(i, height[i]));
+                    visit[i] <span style=color:#f92672>=</span> true;
+                }
+            }
+        }
+        min_height <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> ((inflow[tmp.id] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>&amp;&amp;</span> (tmp.id <span style=color:#f92672>!=</span> t))
+        {
+            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> s <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;=</span> t; i<span style=color:#f92672>++</span>)
+            {
+                <span style=color:#66d9ef>if</span> (map[tmp.id][i] <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)
+                {
+                    <span style=color:#66d9ef>if</span> ((min_height <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) <span style=color:#f92672>||</span> (height[i] <span style=color:#f92672>&lt;</span> min_height))
+                    {
+                        min_height <span style=color:#f92672>=</span> height[i];
+                    }
+                }
+            }
+            <span style=color:#66d9ef>if</span> ((min_height <span style=color:#f92672>!=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>) <span style=color:#f92672>&amp;&amp;</span> (min_height <span style=color:#f92672>&lt;</span> t))
+            {
+                gap[height[tmp.id]]<span style=color:#f92672>--</span>;
+                <span style=color:#66d9ef>if</span> (gap[height[tmp.id]] <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+                {
+                    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> s; i <span style=color:#f92672>&lt;=</span> t; i<span style=color:#f92672>++</span>)
+                    {
+                        <span style=color:#66d9ef>if</span> ((height[i] <span style=color:#f92672>&gt;=</span> height[tmp.id]) <span style=color:#f92672>&amp;&amp;</span> (height[i] <span style=color:#f92672>&lt;</span> t))
+                        {
+                            gap[height[i]]<span style=color:#f92672>--</span>;
+                            height[i] <span style=color:#f92672>=</span> t;
+                            <span style=color:#66d9ef>if</span> (visit[i])
+                            {
+                                Q.pop();
+                            }
+                        }
+                    }
+                }
+                gap[height[tmp.id] <span style=color:#f92672>=</span> min_height <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>]<span style=color:#f92672>++</span>;
+                Q.push(node_node(tmp.id, height[tmp.id]));
+                visit[tmp.id] <span style=color:#f92672>=</span> true;
+            }
+        }
+    }
+    <span style=color:#66d9ef>return</span> inflow[t];
+}
+
+<span style=color:#75715e>#ifndef DATA
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;champion.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;champion.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    read(n);
+    read(m);
+    s <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+    t <span style=color:#f92672>=</span> n <span style=color:#f92672>+</span> <span style=color:#ae81ff>2</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>; i <span style=color:#f92672>&lt;=</span> n; i<span style=color:#f92672>++</span>)
+    {
+        scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>k);
+        <span style=color:#66d9ef>if</span> (k <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>)
+        {
+            add_edge(s, i <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            add_edge(i <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, t, <span style=color:#ae81ff>1</span>);
+        }
+    }
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+    {
+        read(x);
+        read(y);
+        add_edge(x <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, y <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>, true);
+    }
+    bfs();
+    printf(<span style=color:#e6db74>&#34;%d&#34;</span>, max_flow());
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;nrun time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    fclose(stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+    <span style=color:#66d9ef>int</span> N <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>;
+    <span style=color:#66d9ef>int</span> M <span style=color:#f92672>=</span> <span style=color:#ae81ff>44850</span>;
+    <span style=color:#66d9ef>int</span> RAND_BASE <span style=color:#f92672>=</span> <span style=color:#ae81ff>32</span>;
+    freopen(<span style=color:#e6db74>&#34;champion.in&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+    srand(RAND_BASE);
+    printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, N, M);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> N; i<span style=color:#f92672>++</span>)
+    {
+        printf(<span style=color:#e6db74>&#34;%d &#34;</span>, rand() <span style=color:#f92672>%</span> <span style=color:#ae81ff>2</span>);
+    }
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> M; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>int</span> x <span style=color:#f92672>=</span> rand() <span style=color:#f92672>%</span> N <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>int</span> y <span style=color:#f92672>=</span> rand() <span style=color:#f92672>%</span> N <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (x <span style=color:#f92672>==</span> y)
+        {
+            i<span style=color:#f92672>--</span>;
+            <span style=color:#66d9ef>continue</span>;
+        }
+        printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, x, y);
+    }
+    fclose(stdout);
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+<span style=color:#75715e>#endif
+</span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://www.sxn.dev/tags/bzoj>BZOJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/gap%E4%BC%98%E5%8C%96>GAP优化</a></span><span class=tag><a href=https://www.sxn.dev/tags/jloi>JLOI</a></span><span class=tag><a href=https://www.sxn.dev/tags/%E6%9C%80%E5%A4%A7%E6%B5%81>最大流</a></span><span class=tag><a href=https://www.sxn.dev/tags/%E6%9C%80%E9%AB%98%E6%A0%87%E5%8F%B7%E9%A2%84%E6%B5%81%E6%8E%A8%E8%BF%9B>最高标号预流推进</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>716 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2014-05-20 15:10 +0000</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.sxn.dev/posts/shoi-vote/><span class=button__icon>←</span>
+<span class=button__text>[BZOJ1934][SHOI2007]Vote 善意的投票（最大流）</span></a></span>
+<span class="button next"><a href=https://www.sxn.dev/posts/scoi2014-oj/><span class=button__text>[BZOJ3595][SCOI2014]方伯伯的OJ（MAP + SPLAY）</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2020</span>
+<span><a href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank rel=noopener>CC BY-NC 4.0</a></span>
+<span><a href=https://www.sxn.dev/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><span>Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>Theme <a href=https://github.com/rhazdon/hugo-theme-hello-friend-ng>Hello Friend NG</a></span></div></div></footer></div><script type=text/javascript src=/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js integrity="sha512-3HFukJLJggt3+W2ilNASCu6xibW86pdSMJ6+on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script></body></html>

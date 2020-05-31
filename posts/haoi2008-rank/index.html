@@ -1,0 +1,1272 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content><meta name=description content="只是一道平衡树水题，其实TREAP就可以了，只是有个操作我觉得还是SPLAY写起来舒服。一开始用的TRIE维护名字，后来又用HASH写了，稍微快了一点点。。"><meta name=keywords content=",BZOJ,HAOI,HASH,SPLAY,TRIE"><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://www.sxn.dev/posts/haoi2008-rank/><title>[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH） :: SHENXN</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.dede02da9537a98158079c023e83573e18127834838ef08172acce888341a797.css><meta itemprop=name content="[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH）"><meta itemprop=description content="只是一道平衡树水题，其实TREAP就可以了，只是有个操作我觉得还是SPLAY写起来舒服。一开始用的TRIE维护名字，后来又用HASH写了，稍微快了一点点。。"><meta itemprop=datePublished content="2014-05-15T16:55:41+00:00"><meta itemprop=dateModified content="2014-05-15T16:55:41+00:00"><meta itemprop=wordCount content="2692"><meta itemprop=image content="https://www.sxn.dev"><meta itemprop=keywords content="BZOJ,HAOI,HASH,SPLAY,TRIE,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.sxn.dev"><meta name=twitter:title content="[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH）"><meta name=twitter:description content="只是一道平衡树水题，其实TREAP就可以了，只是有个操作我觉得还是SPLAY写起来舒服。一开始用的TRIE维护名字，后来又用HASH写了，稍微快了一点点。。"><meta property="og:title" content="[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH）"><meta property="og:description" content="只是一道平衡树水题，其实TREAP就可以了，只是有个操作我觉得还是SPLAY写起来舒服。一开始用的TRIE维护名字，后来又用HASH写了，稍微快了一点点。。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.sxn.dev/posts/haoi2008-rank/"><meta property="og:image" content="https://www.sxn.dev"><meta property="article:published_time" content="2014-05-15T16:55:41+00:00"><meta property="article:modified_time" content="2014-05-15T16:55:41+00:00"><meta property="og:site_name" content="SHENXN"><meta property="article:section" content="OI"><meta property="article:published_time" content="2014-05-15 16:55:41 +0000 UTC"></head><body class=dark-theme><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__mark>></span>
+<span class=logo__text>cd ~</span>
+<span class=logo__cursor></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://www.sxn.dev/about>About</a></li><li><a href=https://www.sxn.dev/posts>Blog</a></li><li><a href=https://www.sxn.dev/projects>Projects</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41C32.4934 41 41 32.4934 41 22 41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>13 minutes</p></div><article><h1 class=post-title><a href=https://www.sxn.dev/posts/haoi2008-rank/>[BZOJ1056][HAOI2008]排名系统（SPLAY + TRIE / HASH）</a></h1><div class=post-content><p>只是一道平衡树水题，其实TREAP就可以了，只是有个操作我觉得还是SPLAY写起来舒服。一开始用的TRIE维护名字，后来又用HASH写了，稍微快了一点点。。</p><p>TRIE版：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#75715e>//HAOI2008 rank.cpp
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdlib&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;map&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_DEBUG
+</span><span style=color:#75715e>//#define STD_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>250010</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXTRIE <span style=color:#f92672>=</span> <span style=color:#ae81ff>500000</span>;
+
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable: 4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#66d9ef>char</span> fread_point;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> fread_point <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>char</span> <span style=color:#a6e22e>get_char</span>()
+{
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>char</span> ret <span style=color:#f92672>=</span> fread_point;
+    fread_point <span style=color:#f92672>=</span> getchar();
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>get_string</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>input)
+{
+    memset(input, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>12</span>);
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>int</span> loop <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;n&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>!=</span> EOF))
+    {
+        input[loop<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> fread_point;
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_char();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%c&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    get_string(a);
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%s&#34;</span>, a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> ll;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>string_to_int</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>a)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; a[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>; i<span style=color:#f92672>++</span>)
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> a[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>splay_node</span>
+{
+    <span style=color:#66d9ef>int</span> val;
+    <span style=color:#66d9ef>char</span> name[<span style=color:#ae81ff>12</span>];
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>l_child, <span style=color:#f92672>*</span>r_child;
+    <span style=color:#66d9ef>int</span> size;
+    <span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>init</span>()
+    {
+        parent <span style=color:#f92672>=</span> l_child <span style=color:#f92672>=</span> r_child <span style=color:#f92672>=</span> NULL;
+        size <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>;
+    }
+};
+
+splay_node recover_splay[MAXN];
+splay_node <span style=color:#f92672>*</span>stack_splay[MAXN];
+<span style=color:#66d9ef>int</span> top_stack_splay <span style=color:#f92672>=</span> MAXN;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_splay</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXN; i<span style=color:#f92672>++</span>)
+    {
+        stack_splay[i] <span style=color:#f92672>=</span> recover_splay <span style=color:#f92672>+</span> i;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_node</span>()
+{
+    <span style=color:#66d9ef>return</span> stack_splay[<span style=color:#f92672>--</span>top_stack_splay]<span style=color:#f92672>-&gt;</span>init();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delete_node</span>(splay_node <span style=color:#f92672>*</span>del_node)
+{
+    stack_splay[top_stack_splay<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> del_node;
+}
+
+splay_node <span style=color:#f92672>*</span>head_splay;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_size</span>(splay_node <span style=color:#f92672>*</span>query_node)
+{
+    <span style=color:#66d9ef>if</span> (query_node <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    }
+    <span style=color:#66d9ef>return</span> query_node<span style=color:#f92672>-&gt;</span>size;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_l_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_r_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zig</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>left_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>l_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_l_child(axis, left_child<span style=color:#f92672>-&gt;</span>r_child);
+    attach_as_r_child(left_child, axis);
+    left_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> left_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> left_child;
+        }
+    }
+    left_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> splay_size(axis<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> splay_size(axis<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zag</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>right_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>r_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_r_child(axis, right_child<span style=color:#f92672>-&gt;</span>l_child);
+    attach_as_l_child(right_child, axis);
+    right_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> right_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> right_child;
+        }
+    }
+    right_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> splay_size(axis<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> splay_size(axis<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_route</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>grand_parent;
+    <span style=color:#66d9ef>while</span> (((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> ((grand_parent <span style=color:#f92672>=</span> parent<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL))
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+        {
+            <span style=color:#66d9ef>if</span> (grand_parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> parent)
+            {
+                zig(grand_parent);
+                zig(parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zig(parent);
+                zag(grand_parent);
+            }
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>if</span> (grand_parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> parent)
+            {
+                zag(grand_parent);
+                zag(parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zag(parent);
+                zig(grand_parent);
+            }
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+        {
+            zig(parent);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            zag(parent);
+        }
+    }
+    <span style=color:#66d9ef>return</span> v;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_find</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> add_size <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>)
+{
+    splay_node <span style=color:#f92672>*</span>last_visit <span style=color:#f92672>=</span> NULL;
+    <span style=color:#66d9ef>for</span> (splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> head_splay; tmp <span style=color:#f92672>!=</span> NULL;)
+    {
+        last_visit <span style=color:#f92672>=</span> tmp;
+        tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> add_size;
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>&gt;=</span> val)
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>r_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>l_child;
+        }
+    }
+    <span style=color:#66d9ef>return</span> last_visit;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_find_by_rank</span>(splay_node <span style=color:#f92672>*</span>v, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+    <span style=color:#66d9ef>int</span> rank <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>int</span> left_size;
+    <span style=color:#66d9ef>while</span> (v <span style=color:#f92672>!=</span> NULL)
+    {
+        left_size <span style=color:#f92672>=</span> splay_size(v<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (rank <span style=color:#f92672>+</span> left_size <span style=color:#f92672>==</span> k)
+        {
+            <span style=color:#66d9ef>return</span> v;
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (rank <span style=color:#f92672>+</span> left_size <span style=color:#f92672>&gt;</span> k)
+        {
+            v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>l_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            rank <span style=color:#f92672>+=</span> left_size;
+            v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>r_child;
+        }
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_last</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    <span style=color:#66d9ef>while</span> (v<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>r_child;
+    }
+    <span style=color:#66d9ef>return</span> v;
+}
+
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_print</span>(splay_node <span style=color:#f92672>*</span>root)
+{
+    <span style=color:#66d9ef>if</span> (root <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    splay_print(root<span style=color:#f92672>-&gt;</span>l_child);
+    printf(<span style=color:#e6db74>&#34; %s&#34;</span>, root<span style=color:#f92672>-&gt;</span>name);
+    splay_print(root<span style=color:#f92672>-&gt;</span>r_child);
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_insert</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>name, splay_node <span style=color:#f92672>*</span>new_pt <span style=color:#f92672>=</span> NULL)
+{
+    <span style=color:#66d9ef>if</span> (new_pt <span style=color:#f92672>==</span> NULL)
+    {
+        new_pt <span style=color:#f92672>=</span> new_node();
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>10</span>; i<span style=color:#f92672>++</span>)
+        {
+            new_pt<span style=color:#f92672>-&gt;</span>name[i] <span style=color:#f92672>=</span> name[i];
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        new_pt<span style=color:#f92672>-&gt;</span>init();
+    }
+    new_pt<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> val;
+    <span style=color:#66d9ef>if</span> (head_splay <span style=color:#f92672>==</span> NULL)
+    {
+        head_splay <span style=color:#f92672>=</span> new_pt;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        splay_node <span style=color:#f92672>*</span>insert_pt <span style=color:#f92672>=</span> splay_find(val, <span style=color:#ae81ff>1</span>);
+        <span style=color:#66d9ef>if</span> (insert_pt<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>&gt;=</span> val)
+        {
+            attach_as_r_child(insert_pt, new_pt);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            attach_as_l_child(insert_pt, new_pt);
+        }
+        head_splay <span style=color:#f92672>=</span> splay_route(new_pt);
+    }
+    <span style=color:#66d9ef>return</span> new_pt;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_delete</span>(splay_node <span style=color:#f92672>*</span>del_node)
+{
+    splay_route(del_node);
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL)
+    {
+        del_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+    }
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        del_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+    }
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> NULL)
+    {
+        head_splay <span style=color:#f92672>=</span> del_node<span style=color:#f92672>-&gt;</span>r_child;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head_splay <span style=color:#f92672>=</span> splay_route(splay_last(del_node<span style=color:#f92672>-&gt;</span>l_child));
+        attach_as_r_child(head_splay, del_node<span style=color:#f92672>-&gt;</span>r_child);
+        head_splay<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> splay_size(del_node<span style=color:#f92672>-&gt;</span>r_child);
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_change</span>(splay_node <span style=color:#f92672>*</span>change_node, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    splay_delete(change_node);
+    splay_insert(val, NULL, change_node);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_query_users</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+    head_splay <span style=color:#f92672>=</span> splay_route(splay_find_by_rank(head_splay, k));
+    printf(<span style=color:#e6db74>&#34;%s&#34;</span>, head_splay<span style=color:#f92672>-&gt;</span>name);
+    <span style=color:#66d9ef>if</span> (splay_size(head_splay<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>9</span>)
+    {
+        splay_print(head_splay<span style=color:#f92672>-&gt;</span>r_child);
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head_splay<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+        attach_as_r_child(head_splay, splay_route(splay_find_by_rank(head_splay<span style=color:#f92672>-&gt;</span>r_child, <span style=color:#ae81ff>10</span>)));
+        splay_print(head_splay<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>l_child);
+    }
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_query_rank</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> splay_size(v<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>while</span> (v<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (v<span style=color:#f92672>-&gt;</span>parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> v)
+        {
+            ret <span style=color:#f92672>+=</span> splay_size(v<span style=color:#f92672>-&gt;</span>parent<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+        v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent;
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>trie_node</span>
+{
+    trie_node <span style=color:#f92672>*</span>next[<span style=color:#ae81ff>26</span>];
+    splay_node <span style=color:#f92672>*</span>val;
+    <span style=color:#66d9ef>inline</span> trie_node <span style=color:#f92672>*</span><span style=color:#a6e22e>init</span>()
+    {
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>26</span>; i<span style=color:#f92672>++</span>)
+        {
+            next[i] <span style=color:#f92672>=</span> NULL;
+        }
+        val <span style=color:#f92672>=</span> NULL;
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>;
+    }
+};
+
+trie_node recover_trie[MAXTRIE];
+trie_node <span style=color:#f92672>*</span>stack_trie[MAXTRIE];
+<span style=color:#66d9ef>int</span> top_stack_trie <span style=color:#f92672>=</span> MAXTRIE;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_trie</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXTRIE; i<span style=color:#f92672>++</span>)
+    {
+        stack_trie[i] <span style=color:#f92672>=</span> recover_trie <span style=color:#f92672>+</span> i;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> trie_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_trie</span>()
+{
+    <span style=color:#66d9ef>return</span> stack_trie[<span style=color:#f92672>--</span>top_stack_trie]<span style=color:#f92672>-&gt;</span>init();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delete_trie</span>(trie_node <span style=color:#f92672>*</span>del_node)
+{
+    stack_trie[top_stack_trie<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> del_node;
+}
+
+trie_node <span style=color:#f92672>*</span>head_trie;
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>trie_find</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>find_string)
+{
+    trie_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> head_trie;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; find_string[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>next[find_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>] <span style=color:#f92672>==</span> NULL)
+        {
+            <span style=color:#66d9ef>return</span> NULL;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>next[find_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>];
+        }
+    }
+    <span style=color:#66d9ef>return</span> tmp<span style=color:#f92672>-&gt;</span>val;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>trie_insert</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>insert_string, splay_node <span style=color:#f92672>*</span>val)
+{
+    trie_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> head_trie;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; insert_string[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>; i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>next[insert_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>] <span style=color:#f92672>==</span> NULL)
+        {
+            tmp<span style=color:#f92672>-&gt;</span>next[insert_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>] <span style=color:#f92672>=</span> new_trie();
+        }
+        tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>next[insert_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>];
+    }
+    tmp<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> val;
+}
+
+<span style=color:#66d9ef>int</span> n;
+<span style=color:#66d9ef>char</span> op_char;
+<span style=color:#66d9ef>char</span> op_name[<span style=color:#ae81ff>12</span>];
+<span style=color:#66d9ef>int</span> k;
+splay_node <span style=color:#f92672>*</span>found;
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    ll start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;rank.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;rank.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    fread_point <span style=color:#f92672>=</span> getchar();
+    read(n);
+    init_splay();
+    init_trie();
+    head_trie <span style=color:#f92672>=</span> new_trie();
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        read(op_char);
+        read(op_name);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        printf(<span style=color:#e6db74>&#34;%d %c %s &#34;</span>, i, op_char, op_name);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (op_char <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;+&#39;</span>)
+        {
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> ((found <span style=color:#f92672>=</span> trie_find(op_name)) <span style=color:#f92672>!=</span> NULL)
+            {
+                splay_change(found, k);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                trie_insert(op_name, splay_insert(k, op_name));
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op_char <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;?&#39;</span>)
+        {
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> ((op_name[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (op_name[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+            {
+                k <span style=color:#f92672>=</span> string_to_int(op_name);
+                splay_query_users(k);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, splay_query_rank(trie_find(op_name)));
+            }
+        }
+    }
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;run time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    fclose(stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div><p>HASH版：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#f92672>**************************************************************</span>
+    Problem: <span style=color:#ae81ff>1056</span>
+    User: shenxn
+    Language: C<span style=color:#f92672>++</span>
+    Result: Accepted
+    Time:<span style=color:#ae81ff>1276</span> ms
+    Memory:<span style=color:#ae81ff>16320</span> kb
+<span style=color:#f92672>***************************************************************</span><span style=color:#960050;background-color:#1e0010>*/</span>
+
+<span style=color:#75715e>//HAOI2008 rank.cpp
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdlib&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;map&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_DEBUG
+</span><span style=color:#75715e>//#define STD_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>250010</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXTRIE <span style=color:#f92672>=</span> <span style=color:#ae81ff>500000</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXHASH <span style=color:#f92672>=</span> <span style=color:#ae81ff>250000</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXHASHLIST <span style=color:#f92672>=</span> <span style=color:#ae81ff>100000</span>;
+
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable: 4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#66d9ef>char</span> fread_point;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> fread_point <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>char</span> <span style=color:#a6e22e>get_char</span>()
+{
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>char</span> ret <span style=color:#f92672>=</span> fread_point;
+    fread_point <span style=color:#f92672>=</span> getchar();
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>get_string</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>input)
+{
+    memset(input, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>12</span>);
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>||</span> (fread_point <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;n&#39;</span>))
+    {
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+    <span style=color:#66d9ef>int</span> loop <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>while</span> ((fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39; &#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;n&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_point <span style=color:#f92672>!=</span> EOF))
+    {
+        input[loop<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> fread_point;
+        fread_point <span style=color:#f92672>=</span> getchar();
+    }
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    a <span style=color:#f92672>=</span> get_char();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%c&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>    get_string(a);
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>    scanf(<span style=color:#e6db74>&#34;%s&#34;</span>, a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> ll;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>string_to_int</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>a)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; a[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>; i<span style=color:#f92672>++</span>)
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> a[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>splay_node</span>
+{
+    <span style=color:#66d9ef>int</span> val;
+    <span style=color:#66d9ef>char</span> name[<span style=color:#ae81ff>12</span>];
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>l_child, <span style=color:#f92672>*</span>r_child;
+    <span style=color:#66d9ef>int</span> size;
+    <span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>init</span>()
+    {
+        parent <span style=color:#f92672>=</span> l_child <span style=color:#f92672>=</span> r_child <span style=color:#f92672>=</span> NULL;
+        size <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>;
+    }
+};
+
+splay_node recover_splay[MAXN];
+splay_node <span style=color:#f92672>*</span>stack_splay[MAXN];
+<span style=color:#66d9ef>int</span> top_stack_splay <span style=color:#f92672>=</span> MAXN;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_splay</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXN; i<span style=color:#f92672>++</span>)
+    {
+        stack_splay[i] <span style=color:#f92672>=</span> recover_splay <span style=color:#f92672>+</span> i;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_node</span>()
+{
+    <span style=color:#66d9ef>return</span> stack_splay[<span style=color:#f92672>--</span>top_stack_splay]<span style=color:#f92672>-&gt;</span>init();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delete_node</span>(splay_node <span style=color:#f92672>*</span>del_node)
+{
+    stack_splay[top_stack_splay<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> del_node;
+}
+
+splay_node <span style=color:#f92672>*</span>head_splay;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_size</span>(splay_node <span style=color:#f92672>*</span>query_node)
+{
+    <span style=color:#66d9ef>if</span> (query_node <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    }
+    <span style=color:#66d9ef>return</span> query_node<span style=color:#f92672>-&gt;</span>size;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_l_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>attach_as_r_child</span>(splay_node <span style=color:#f92672>*</span>parent, splay_node <span style=color:#f92672>*</span>child)
+{
+    parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> child;
+    <span style=color:#66d9ef>if</span> (child <span style=color:#f92672>!=</span> NULL)
+    {
+        child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zig</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>left_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>l_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_l_child(axis, left_child<span style=color:#f92672>-&gt;</span>r_child);
+    attach_as_r_child(left_child, axis);
+    left_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> left_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> left_child;
+        }
+    }
+    left_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> splay_size(axis<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> splay_size(axis<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>zag</span>(splay_node <span style=color:#f92672>*</span>axis)
+{
+    splay_node <span style=color:#f92672>*</span>right_child <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>r_child;
+    splay_node <span style=color:#f92672>*</span>parent <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>parent;
+    attach_as_r_child(axis, right_child<span style=color:#f92672>-&gt;</span>l_child);
+    attach_as_l_child(right_child, axis);
+    right_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> parent;
+    <span style=color:#66d9ef>if</span> (parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> axis)
+        {
+            parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> right_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> right_child;
+        }
+    }
+    right_child<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> axis<span style=color:#f92672>-&gt;</span>size;
+    axis<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>=</span> splay_size(axis<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> splay_size(axis<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_route</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    splay_node <span style=color:#f92672>*</span>parent, <span style=color:#f92672>*</span>grand_parent;
+    <span style=color:#66d9ef>while</span> (((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL) <span style=color:#f92672>&amp;&amp;</span> ((grand_parent <span style=color:#f92672>=</span> parent<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL))
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+        {
+            <span style=color:#66d9ef>if</span> (grand_parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> parent)
+            {
+                zig(grand_parent);
+                zig(parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zig(parent);
+                zag(grand_parent);
+            }
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            <span style=color:#66d9ef>if</span> (grand_parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> parent)
+            {
+                zag(grand_parent);
+                zag(parent);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                zag(parent);
+                zig(grand_parent);
+            }
+        }
+    }
+    <span style=color:#66d9ef>if</span> ((parent <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent) <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (parent<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> v)
+        {
+            zig(parent);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            zag(parent);
+        }
+    }
+    <span style=color:#66d9ef>return</span> v;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_find</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> add_size <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>)
+{
+    splay_node <span style=color:#f92672>*</span>last_visit <span style=color:#f92672>=</span> NULL;
+    <span style=color:#66d9ef>for</span> (splay_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> head_splay; tmp <span style=color:#f92672>!=</span> NULL;)
+    {
+        last_visit <span style=color:#f92672>=</span> tmp;
+        tmp<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> add_size;
+        <span style=color:#66d9ef>if</span> (tmp<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>&gt;=</span> val)
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>r_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>l_child;
+        }
+    }
+    <span style=color:#66d9ef>return</span> last_visit;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_find_by_rank</span>(splay_node <span style=color:#f92672>*</span>v, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+    <span style=color:#66d9ef>int</span> rank <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>int</span> left_size;
+    <span style=color:#66d9ef>while</span> (v <span style=color:#f92672>!=</span> NULL)
+    {
+        left_size <span style=color:#f92672>=</span> splay_size(v<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        <span style=color:#66d9ef>if</span> (rank <span style=color:#f92672>+</span> left_size <span style=color:#f92672>==</span> k)
+        {
+            <span style=color:#66d9ef>return</span> v;
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (rank <span style=color:#f92672>+</span> left_size <span style=color:#f92672>&gt;</span> k)
+        {
+            v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>l_child;
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            rank <span style=color:#f92672>+=</span> left_size;
+            v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>r_child;
+        }
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_last</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    <span style=color:#66d9ef>while</span> (v<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>r_child;
+    }
+    <span style=color:#66d9ef>return</span> v;
+}
+
+<span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_print</span>(splay_node <span style=color:#f92672>*</span>root)
+{
+    <span style=color:#66d9ef>if</span> (root <span style=color:#f92672>==</span> NULL)
+    {
+        <span style=color:#66d9ef>return</span>;
+    }
+    splay_print(root<span style=color:#f92672>-&gt;</span>l_child);
+    printf(<span style=color:#e6db74>&#34; %s&#34;</span>, root<span style=color:#f92672>-&gt;</span>name);
+    splay_print(root<span style=color:#f92672>-&gt;</span>r_child);
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>splay_insert</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>name, splay_node <span style=color:#f92672>*</span>new_pt <span style=color:#f92672>=</span> NULL)
+{
+    <span style=color:#66d9ef>if</span> (new_pt <span style=color:#f92672>==</span> NULL)
+    {
+        new_pt <span style=color:#f92672>=</span> new_node();
+        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>10</span>; i<span style=color:#f92672>++</span>)
+        {
+            new_pt<span style=color:#f92672>-&gt;</span>name[i] <span style=color:#f92672>=</span> name[i];
+        }
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        new_pt<span style=color:#f92672>-&gt;</span>init();
+    }
+    new_pt<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> val;
+    <span style=color:#66d9ef>if</span> (head_splay <span style=color:#f92672>==</span> NULL)
+    {
+        head_splay <span style=color:#f92672>=</span> new_pt;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        splay_node <span style=color:#f92672>*</span>insert_pt <span style=color:#f92672>=</span> splay_find(val, <span style=color:#ae81ff>1</span>);
+        <span style=color:#66d9ef>if</span> (insert_pt<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>&gt;=</span> val)
+        {
+            attach_as_r_child(insert_pt, new_pt);
+        }
+        <span style=color:#66d9ef>else</span>
+        {
+            attach_as_l_child(insert_pt, new_pt);
+        }
+        head_splay <span style=color:#f92672>=</span> splay_route(new_pt);
+    }
+    <span style=color:#66d9ef>return</span> new_pt;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_delete</span>(splay_node <span style=color:#f92672>*</span>del_node)
+{
+    splay_route(del_node);
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>!=</span> NULL)
+    {
+        del_node<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+    }
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>!=</span> NULL)
+    {
+        del_node<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+    }
+    <span style=color:#66d9ef>if</span> (del_node<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> NULL)
+    {
+        head_splay <span style=color:#f92672>=</span> del_node<span style=color:#f92672>-&gt;</span>r_child;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head_splay <span style=color:#f92672>=</span> splay_route(splay_last(del_node<span style=color:#f92672>-&gt;</span>l_child));
+        attach_as_r_child(head_splay, del_node<span style=color:#f92672>-&gt;</span>r_child);
+        head_splay<span style=color:#f92672>-&gt;</span>size <span style=color:#f92672>+=</span> splay_size(del_node<span style=color:#f92672>-&gt;</span>r_child);
+    }
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_change</span>(splay_node <span style=color:#f92672>*</span>change_node, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> val)
+{
+    splay_delete(change_node);
+    splay_insert(val, NULL, change_node);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>splay_query_users</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+    head_splay <span style=color:#f92672>=</span> splay_route(splay_find_by_rank(head_splay, k));
+    printf(<span style=color:#e6db74>&#34;%s&#34;</span>, head_splay<span style=color:#f92672>-&gt;</span>name);
+    <span style=color:#66d9ef>if</span> (splay_size(head_splay<span style=color:#f92672>-&gt;</span>r_child) <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>9</span>)
+    {
+        splay_print(head_splay<span style=color:#f92672>-&gt;</span>r_child);
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        head_splay<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> NULL;
+        attach_as_r_child(head_splay, splay_route(splay_find_by_rank(head_splay<span style=color:#f92672>-&gt;</span>r_child, <span style=color:#ae81ff>10</span>)));
+        splay_print(head_splay<span style=color:#f92672>-&gt;</span>r_child<span style=color:#f92672>-&gt;</span>l_child);
+    }
+    printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>splay_query_rank</span>(splay_node <span style=color:#f92672>*</span>v)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> splay_size(v<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+    <span style=color:#66d9ef>while</span> (v<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (v<span style=color:#f92672>-&gt;</span>parent<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>==</span> v)
+        {
+            ret <span style=color:#f92672>+=</span> splay_size(v<span style=color:#f92672>-&gt;</span>parent<span style=color:#f92672>-&gt;</span>l_child) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+        }
+        v <span style=color:#f92672>=</span> v<span style=color:#f92672>-&gt;</span>parent;
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#75715e>/*
+</span><span style=color:#75715e>struct trie_node
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    trie_node *next[26];
+</span><span style=color:#75715e>    splay_node *val;
+</span><span style=color:#75715e>    inline trie_node *init()
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        for (int i = 0; i &lt; 26; i++)
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            next[i] = NULL;
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>        val = NULL;
+</span><span style=color:#75715e>        return this;
+</span><span style=color:#75715e>    }
+</span><span style=color:#75715e>};
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>trie_node recover_trie[MAXTRIE];
+</span><span style=color:#75715e>trie_node *stack_trie[MAXTRIE];
+</span><span style=color:#75715e>int top_stack_trie = MAXTRIE;
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>inline void init_trie()
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    for (int i = 0; i &lt; MAXTRIE; i++)
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        stack_trie[i] = recover_trie + i;
+</span><span style=color:#75715e>    }
+</span><span style=color:#75715e>}
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>inline trie_node *new_trie()
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    return stack_trie[--top_stack_trie]-&gt;init();
+</span><span style=color:#75715e>}
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>inline void delete_trie(trie_node *del_node)
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    stack_trie[top_stack_trie++] = del_node;
+</span><span style=color:#75715e>}
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>trie_node *head_trie;
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>inline splay_node *trie_find(char *find_string)
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    trie_node *tmp = head_trie;
+</span><span style=color:#75715e>    for (int i = 0; find_string[i] != 0; i++)
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        if (tmp-&gt;next[find_string[i] - &#39;A&#39;] == NULL)
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            return NULL;
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>        else
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            tmp = tmp-&gt;next[find_string[i] - &#39;A&#39;];
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>    }
+</span><span style=color:#75715e>    return tmp-&gt;val;
+</span><span style=color:#75715e>}
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>inline void trie_insert(char *insert_string, splay_node *val)
+</span><span style=color:#75715e>{
+</span><span style=color:#75715e>    trie_node *tmp = head_trie;
+</span><span style=color:#75715e>    for (int i = 0; insert_string[i] != 0; i++)
+</span><span style=color:#75715e>    {
+</span><span style=color:#75715e>        if (tmp-&gt;next[insert_string[i] - &#39;A&#39;] == NULL)
+</span><span style=color:#75715e>        {
+</span><span style=color:#75715e>            tmp-&gt;next[insert_string[i] - &#39;A&#39;] = new_trie();
+</span><span style=color:#75715e>        }
+</span><span style=color:#75715e>        tmp = tmp-&gt;next[insert_string[i] - &#39;A&#39;];
+</span><span style=color:#75715e>    }
+</span><span style=color:#75715e>    tmp-&gt;val = val;
+</span><span style=color:#75715e>}
+</span><span style=color:#75715e>*/</span>
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>hash_node</span>
+{
+    splay_node <span style=color:#f92672>*</span>val;
+    <span style=color:#66d9ef>char</span> name[<span style=color:#ae81ff>12</span>];
+    hash_node <span style=color:#f92672>*</span>next;
+    <span style=color:#66d9ef>inline</span> hash_node <span style=color:#f92672>*</span><span style=color:#a6e22e>init</span>()
+    {
+        next <span style=color:#f92672>=</span> NULL;
+        memset(name, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>12</span>);
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>;
+    }
+};
+
+hash_node recover_hash[MAXHASH];
+hash_node <span style=color:#f92672>*</span>stack_hash[MAXHASH];
+<span style=color:#66d9ef>int</span> top_stack_hash <span style=color:#f92672>=</span> MAXHASH;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_hash</span>()
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXHASH; i<span style=color:#f92672>++</span>)
+    {
+        stack_hash[i] <span style=color:#f92672>=</span> recover_hash <span style=color:#f92672>+</span> i;
+    }
+}
+
+<span style=color:#66d9ef>inline</span> hash_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_hash</span>()
+{
+    <span style=color:#66d9ef>return</span> stack_hash[<span style=color:#f92672>--</span>top_stack_hash]<span style=color:#f92672>-&gt;</span>init();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>delete_hash</span>(hash_node <span style=color:#f92672>*</span>del_node)
+{
+    stack_hash[top_stack_hash<span style=color:#f92672>++</span>] <span style=color:#f92672>=</span> del_node;
+}
+
+hash_node <span style=color:#f92672>*</span>hash_list[MAXHASHLIST];
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>hash</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>hash_string)
+{
+    <span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; hash_string[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>; i<span style=color:#f92672>++</span>)
+    {
+        ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>37</span> <span style=color:#f92672>+</span> hash_string[i] <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;A&#39;</span>;
+        <span style=color:#66d9ef>if</span> (ret <span style=color:#f92672>&gt;=</span> MAXHASHLIST)
+        {
+            ret <span style=color:#f92672>%=</span> MAXHASHLIST;
+        }
+    }
+    <span style=color:#66d9ef>return</span> ret;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>equal</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>a, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>b)
+{
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; (a[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>||</span> (b[i] <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>); i<span style=color:#f92672>++</span>)
+    {
+        <span style=color:#66d9ef>if</span> (a[i] <span style=color:#f92672>!=</span> b[i])
+        {
+            <span style=color:#66d9ef>return</span> false;
+        }
+    }
+    <span style=color:#66d9ef>return</span> true;
+}
+
+<span style=color:#66d9ef>inline</span> splay_node <span style=color:#f92672>*</span><span style=color:#a6e22e>hash_get</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>get_string)
+{
+    hash_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> hash_list[hash(get_string)];
+    <span style=color:#66d9ef>while</span> (tmp <span style=color:#f92672>!=</span> NULL)
+    {
+        <span style=color:#66d9ef>if</span> (equal(get_string, tmp<span style=color:#f92672>-&gt;</span>name))
+        {
+            <span style=color:#66d9ef>return</span> tmp<span style=color:#f92672>-&gt;</span>val;
+        }
+        tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>next;
+    }
+    <span style=color:#66d9ef>return</span> NULL;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>hash_insert</span>(<span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>insert_string, splay_node <span style=color:#f92672>*</span>val)
+{
+    hash_node <span style=color:#f92672>*</span>tmp <span style=color:#f92672>=</span> hash_list[hash(insert_string)];
+    hash_node <span style=color:#f92672>*</span>new_pt <span style=color:#f92672>=</span> new_hash();
+    new_pt<span style=color:#f92672>-&gt;</span>val <span style=color:#f92672>=</span> val;
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>10</span>; i<span style=color:#f92672>++</span>)
+    {
+        new_pt<span style=color:#f92672>-&gt;</span>name[i] <span style=color:#f92672>=</span> insert_string[i];
+    }
+    <span style=color:#66d9ef>if</span> (tmp <span style=color:#f92672>==</span> NULL)
+    {
+        hash_list[hash(insert_string)] <span style=color:#f92672>=</span> new_pt;
+    }
+    <span style=color:#66d9ef>else</span>
+    {
+        <span style=color:#66d9ef>while</span> (tmp<span style=color:#f92672>-&gt;</span>next <span style=color:#f92672>!=</span> NULL)
+        {
+            tmp <span style=color:#f92672>=</span> tmp<span style=color:#f92672>-&gt;</span>next;
+        }
+        tmp<span style=color:#f92672>-&gt;</span>next <span style=color:#f92672>=</span> new_pt;
+    }
+}
+
+<span style=color:#66d9ef>int</span> n;
+<span style=color:#66d9ef>char</span> op_char;
+<span style=color:#66d9ef>char</span> op_name[<span style=color:#ae81ff>12</span>];
+<span style=color:#66d9ef>int</span> k;
+splay_node <span style=color:#f92672>*</span>found;
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    ll start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;rank.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    freopen(<span style=color:#e6db74>&#34;rank.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    fread_point <span style=color:#f92672>=</span> getchar();
+    read(n);
+    init_splay();
+    init_hash();
+    <span style=color:#75715e>/*
+</span><span style=color:#75715e>    init_trie();
+</span><span style=color:#75715e>    head_trie = new_trie();
+</span><span style=color:#75715e>    */</span>
+    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+    {
+        read(op_char);
+        read(op_name);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>        printf(<span style=color:#e6db74>&#34;%d %c %s &#34;</span>, i, op_char, op_name);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (op_char <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;+&#39;</span>)
+        {
+            read(k);
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, k);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> ((found <span style=color:#f92672>=</span> <span style=color:#75715e>/*trie_find(op_name)*/</span> hash_get(op_name)) <span style=color:#f92672>!=</span> NULL)
+            {
+                splay_change(found, k);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                hash_insert(op_name, splay_insert(k, op_name));
+                <span style=color:#75715e>/*
+</span><span style=color:#75715e>                trie_insert(op_name, splay_insert(k, op_name));
+</span><span style=color:#75715e>                */</span>
+            }
+        }
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (op_char <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;?&#39;</span>)
+        {
+<span style=color:#75715e>#ifdef LOCAL_DEBUG
+</span><span style=color:#75715e></span>            printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span> ((op_name[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (op_name[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+            {
+                k <span style=color:#f92672>=</span> string_to_int(op_name);
+                splay_query_users(k);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, splay_query_rank(<span style=color:#75715e>/*trie_find(op_name)*/</span> hash_get(op_name)));
+            }
+        }
+    }
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>    printf(<span style=color:#e6db74>&#34;run time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>    fclose(stdin);
+<span style=color:#75715e>#ifndef STD_DEBUG
+</span><span style=color:#75715e></span>    fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+</code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://www.sxn.dev/tags/bzoj>BZOJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/haoi>HAOI</a></span><span class=tag><a href=https://www.sxn.dev/tags/hash>HASH</a></span><span class=tag><a href=https://www.sxn.dev/tags/splay>SPLAY</a></span><span class=tag><a href=https://www.sxn.dev/tags/trie>TRIE</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>2692 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2014-05-15 16:55 +0000</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.sxn.dev/posts/fjoi2007-virus/><span class=button__icon>←</span>
+<span class=button__text>[BZOJ1002][FJOI2007]轮状病毒（DP + 高精度）</span></a></span>
+<span class="button next"><a href=https://www.sxn.dev/posts/tyvj1730/><span class=button__text>[BZOJ3196][TYVJ1730]二逼平衡树（分块·伪）</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2020</span>
+<span><a href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank rel=noopener>CC BY-NC 4.0</a></span>
+<span><a href=https://www.sxn.dev/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><span>Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>Theme <a href=https://github.com/rhazdon/hugo-theme-hello-friend-ng>Hello Friend NG</a></span></div></div></footer></div><script type=text/javascript src=/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js integrity="sha512-3HFukJLJggt3+W2ilNASCu6xibW86pdSMJ6+on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script></body></html>

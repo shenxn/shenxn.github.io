@@ -1,0 +1,319 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content><meta name=description content="终于下定决心开始学主席树了，先找了一道不带修改的区间第K大做。关于带修改的区间第K大，参见我的下一篇博客 {% post_link zoj2112 %}
+主席树其实就是一种可持久化的线段树，是函数式编程的一个很经典的应用（另外的话，我就只知道FANHQ_TREAP了）。主要思想是在对线段树的节点进行修改的时候，不改变原节点，而是新开一个节点并链到数中。"><meta name=keywords content=",POJ,主席树"><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://www.sxn.dev/posts/poj2104/><title>[POJ2104]K-th Number（主席树） :: SHENXN</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.dede02da9537a98158079c023e83573e18127834838ef08172acce888341a797.css><meta itemprop=name content="[POJ2104]K-th Number（主席树）"><meta itemprop=description content="终于下定决心开始学主席树了，先找了一道不带修改的区间第K大做。关于带修改的区间第K大，参见我的下一篇博客 {% post_link zoj2112 %}
+主席树其实就是一种可持久化的线段树，是函数式编程的一个很经典的应用（另外的话，我就只知道FANHQ_TREAP了）。主要思想是在对线段树的节点进行修改的时候，不改变原节点，而是新开一个节点并链到数中。"><meta itemprop=datePublished content="2014-05-18T12:47:50+00:00"><meta itemprop=dateModified content="2014-05-18T12:47:50+00:00"><meta itemprop=wordCount content="822"><meta itemprop=image content="https://www.sxn.dev"><meta itemprop=keywords content="POJ,主席树,"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.sxn.dev"><meta name=twitter:title content="[POJ2104]K-th Number（主席树）"><meta name=twitter:description content="终于下定决心开始学主席树了，先找了一道不带修改的区间第K大做。关于带修改的区间第K大，参见我的下一篇博客 {% post_link zoj2112 %}
+主席树其实就是一种可持久化的线段树，是函数式编程的一个很经典的应用（另外的话，我就只知道FANHQ_TREAP了）。主要思想是在对线段树的节点进行修改的时候，不改变原节点，而是新开一个节点并链到数中。"><meta property="og:title" content="[POJ2104]K-th Number（主席树）"><meta property="og:description" content="终于下定决心开始学主席树了，先找了一道不带修改的区间第K大做。关于带修改的区间第K大，参见我的下一篇博客 {% post_link zoj2112 %}
+主席树其实就是一种可持久化的线段树，是函数式编程的一个很经典的应用（另外的话，我就只知道FANHQ_TREAP了）。主要思想是在对线段树的节点进行修改的时候，不改变原节点，而是新开一个节点并链到数中。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.sxn.dev/posts/poj2104/"><meta property="og:image" content="https://www.sxn.dev"><meta property="article:published_time" content="2014-05-18T12:47:50+00:00"><meta property="article:modified_time" content="2014-05-18T12:47:50+00:00"><meta property="og:site_name" content="SHENXN"><meta property="article:section" content="OI"><meta property="article:published_time" content="2014-05-18 12:47:50 +0000 UTC"></head><body class=dark-theme><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__mark>></span>
+<span class=logo__text>cd ~</span>
+<span class=logo__cursor></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=https://www.sxn.dev/about>About</a></li><li><a href=https://www.sxn.dev/posts>Blog</a></li><li><a href=https://www.sxn.dev/projects>Projects</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41C32.4934 41 41 32.4934 41 22 41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>4 minutes</p></div><article><h1 class=post-title><a href=https://www.sxn.dev/posts/poj2104/>[POJ2104]K-th Number（主席树）</a></h1><div class=post-content><p>终于下定决心开始学主席树了，先找了一道不带修改的区间第K大做。关于带修改的区间第K大，参见我的下一篇博客 {% post_link zoj2112 %}</p><p>主席树其实就是一种可持久化的线段树，是函数式编程的一个很经典的应用（另外的话，我就只知道FANHQ_TREAP了）。主要思想是在对线段树的节点进行修改的时候，不改变原节点，而是新开一个节点并链到数中。</p><p>用主席树对一个长度为n的数列做区间第K大需要建n棵线段树，第i棵线段树维护前i个数的信息。线段树对数列的值二分，一个覆盖[l, r]的节点表示前i个数中值的大小在[l, r]内的数的个数。如数列1,2,3,5,4的第4棵线段树记录1,2,3,5的信息，这棵线段树上覆盖[1, 5]的节点的tot=4，因为所有数的大小都在[1, 5]内，而覆盖[1, 4]的节点的tot=3，因为只有1,2,3在[1, 4]内。</p><p>那我们怎么找区间第k大呢？假设我们需要知道区间[l, r]内（这里的l和r表示数的下标，不同于上面表示值）的区间第k大，那我们需要一棵记录[l, r]内数的信息的线段树，我们之前已经建好了数列所有前缀的线段树，稍加思考就可以知道，这样一棵线段树可以由第r棵线段树减去第l - 1棵线段树得到。比如我要得到[3, 5]内数的大小在[1, 5]之间的数的个数，那我们可以通过前5个数中大小在[1, 5]之间的数的个数减去前2个数中大小在[1, 5]之间的数的个数得到。</p><p>好像做了那么久都没有用到可持久化啊，这样的空间复杂度和时间复杂度依然在(O(n^2))级别，我还不如写暴力。那怎么办呢？前面我们讲到了函数式编程的方法。首先，由于主席树是根据值做二分，每棵主席树其实长得都一样，而且第i棵主席树和第i - 1棵主席树许多节点也是一样的，要修改的只是长度为(log_2n)的一条链，那我们在生成第i棵主席树的时候就可以用到第i棵主席树上大多数的节点，对于需要修改的只需要新建节点即可。这样的话时间和空间复杂度就降到了(O(nlog_2n))的级别。</p><p>再多加考虑的话会发现很多主席数上的节点都记录着0，而且一个节点记录着0意味着它的两棵子树上的所有节点记录的也都是0，那么这些节点就是多余的。所以初始的时候我们只需要一个空节点，在初始化的过程中再往树上增加节点就又可以很大程度上节约内存。</p><p>如果对原数列进行离散化可以进一步节约空间和时间，这样做下来，在POJ上这道题我一共开了200W的线段树节点就AC了， 内存40+M，时间1.5S（写得渣求不BS）。下面是代码（最后有一个调试的时候用的暴力，请无视之）。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#75715e>//POJ 2104.cpp
+</span><span style=color:#75715e></span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstring&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdlib&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cstdio&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;cmath&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;queue&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;set&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;map&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>//#define LOCAL
+</span><span style=color:#75715e>//#define READ_FILE
+</span><span style=color:#75715e></span><span style=color:#75715e>#define READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define VISUAL_STUDIO
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL
+</span><span style=color:#75715e>#define LOCAL_TIME
+</span><span style=color:#75715e>#define LOCAL_DEBUG
+</span><span style=color:#75715e></span><span style=color:#75715e>//#define LOCAL_SIMP
+</span><span style=color:#75715e></span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXN <span style=color:#f92672>=</span> <span style=color:#ae81ff>100010</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> MAXTREE <span style=color:#f92672>=</span> <span style=color:#ae81ff>2000000</span>;
+
+<span style=color:#75715e>#ifdef VISUAL_STUDIO
+</span><span style=color:#75715e>#pragma warning(disable: 4996)
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e>#include</span><span style=color:#75715e>&lt;ctime&gt;</span><span style=color:#75715e>
+</span><span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span><span style=color:#66d9ef>char</span> fread_char;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fread_init</span>()
+{
+	fread_char <span style=color:#f92672>=</span> getchar();
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>get_int</span>()
+{
+	<span style=color:#66d9ef>int</span> ret <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+	<span style=color:#66d9ef>while</span> ((fread_char <span style=color:#f92672>&lt;</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>||</span> (fread_char <span style=color:#f92672>&gt;</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+	{
+		fread_char <span style=color:#f92672>=</span> getchar();
+	}
+	<span style=color:#66d9ef>while</span> ((fread_char <span style=color:#f92672>&gt;=</span> <span style=color:#e6db74>&#39;0&#39;</span>) <span style=color:#f92672>&amp;&amp;</span> (fread_char <span style=color:#f92672>&lt;=</span> <span style=color:#e6db74>&#39;9&#39;</span>))
+	{
+		ret <span style=color:#f92672>=</span> ret <span style=color:#f92672>*</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> fread_char <span style=color:#f92672>-</span> <span style=color:#e6db74>&#39;0&#39;</span>;
+		fread_char <span style=color:#f92672>=</span> getchar();
+	}
+	<span style=color:#66d9ef>return</span> ret;
+}
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>read</span>(<span style=color:#66d9ef>int</span> <span style=color:#f92672>&amp;</span>a)
+{
+<span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>	a <span style=color:#f92672>=</span> get_int();
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span>	scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>a);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>discre_node</span>
+{
+	<span style=color:#66d9ef>int</span> val, id;
+	<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>bool</span> <span style=color:#66d9ef>operator</span> <span style=color:#f92672>&lt;</span> (<span style=color:#66d9ef>const</span> discre_node <span style=color:#f92672>&amp;</span>b) <span style=color:#66d9ef>const</span>
+	{
+		<span style=color:#66d9ef>return</span> val <span style=color:#f92672>&lt;</span> b.val;
+	}
+};
+
+<span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>tree_node</span>
+{
+	<span style=color:#66d9ef>int</span> tot;
+	tree_node <span style=color:#f92672>*</span>l_child, <span style=color:#f92672>*</span>r_child;
+	<span style=color:#66d9ef>inline</span> tree_node <span style=color:#f92672>*</span><span style=color:#a6e22e>init</span>()
+	{
+		l_child <span style=color:#f92672>=</span> r_child <span style=color:#f92672>=</span> NULL;
+		tot <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>;
+	}
+};
+
+tree_node recover_tree_node[MAXTREE];
+tree_node <span style=color:#f92672>*</span>stack_recover_tree_node[MAXTREE];
+<span style=color:#66d9ef>int</span> top_stack_recover_treee_node <span style=color:#f92672>=</span> MAXTREE;
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init_recover_tree_node</span>()
+{
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> MAXTREE; i<span style=color:#f92672>++</span>)
+	{
+		stack_recover_tree_node[i] <span style=color:#f92672>=</span> recover_tree_node <span style=color:#f92672>+</span> i;
+	}
+}
+
+<span style=color:#66d9ef>inline</span> tree_node <span style=color:#f92672>*</span><span style=color:#a6e22e>new_node</span>()
+{
+	<span style=color:#66d9ef>return</span> stack_recover_tree_node[<span style=color:#f92672>--</span>top_stack_recover_treee_node]<span style=color:#f92672>-&gt;</span>init();
+}
+
+<span style=color:#66d9ef>int</span> n, m;
+discre_node discre_tmp[MAXN];
+<span style=color:#66d9ef>int</span> discre_to_num[MAXN];
+<span style=color:#66d9ef>int</span> discre[MAXN];
+<span style=color:#66d9ef>int</span> max_dis;
+<span style=color:#66d9ef>int</span> l, r, k;
+tree_node <span style=color:#f92672>*</span>prefix[MAXN];
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>tree_insert</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> i)
+{
+	prefix[i] <span style=color:#f92672>=</span> new_node();
+	tree_node <span style=color:#f92672>*</span>last_root <span style=color:#f92672>=</span> (i <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> NULL <span style=color:#f92672>:</span> prefix[i <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>]);
+	tree_node <span style=color:#f92672>*</span>new_root <span style=color:#f92672>=</span> prefix[i];
+	<span style=color:#66d9ef>int</span> l <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>, r <span style=color:#f92672>=</span> max_dis, mid;
+	<span style=color:#66d9ef>while</span> (l <span style=color:#f92672>&lt;</span> r)
+	{
+		mid <span style=color:#f92672>=</span> (l <span style=color:#f92672>+</span> r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+		<span style=color:#66d9ef>if</span> (discre[i] <span style=color:#f92672>&lt;=</span> mid)
+		{
+			new_root<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> (last_root <span style=color:#f92672>==</span> NULL <span style=color:#f92672>?</span> NULL <span style=color:#f92672>:</span> last_root<span style=color:#f92672>-&gt;</span>r_child);
+			<span style=color:#66d9ef>if</span> (last_root <span style=color:#f92672>!=</span> NULL)
+			{
+				new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> last_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+				last_root <span style=color:#f92672>=</span> last_root<span style=color:#f92672>-&gt;</span>l_child;
+			}
+			<span style=color:#66d9ef>else</span>
+			{
+				new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+			}
+			new_root<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> new_node();
+			new_root <span style=color:#f92672>=</span> new_root<span style=color:#f92672>-&gt;</span>l_child;
+			r <span style=color:#f92672>=</span> mid;
+		}
+		<span style=color:#66d9ef>else</span>
+		{
+			new_root<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>=</span> (last_root <span style=color:#f92672>==</span> NULL <span style=color:#f92672>?</span> NULL <span style=color:#f92672>:</span> last_root<span style=color:#f92672>-&gt;</span>l_child);
+			<span style=color:#66d9ef>if</span> (last_root <span style=color:#f92672>!=</span> NULL)
+			{
+				new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> last_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+				last_root <span style=color:#f92672>=</span> last_root<span style=color:#f92672>-&gt;</span>r_child;
+			}
+			<span style=color:#66d9ef>else</span>
+			{
+				new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+			}
+			new_root<span style=color:#f92672>-&gt;</span>r_child <span style=color:#f92672>=</span> new_node();
+			new_root <span style=color:#f92672>=</span> new_root<span style=color:#f92672>-&gt;</span>r_child;
+			l <span style=color:#f92672>=</span> mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+		}
+	}
+	<span style=color:#66d9ef>if</span> (last_root <span style=color:#f92672>!=</span> NULL)
+	{
+		new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> last_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+	}
+	<span style=color:#66d9ef>else</span>
+	{
+		new_root<span style=color:#f92672>-&gt;</span>tot <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+	}
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>left_size</span>(tree_node <span style=color:#f92672>*</span>query)
+{
+	<span style=color:#66d9ef>if</span> (query <span style=color:#f92672>==</span> NULL)
+	{
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+	}
+	<span style=color:#66d9ef>if</span> (query<span style=color:#f92672>-&gt;</span>l_child <span style=color:#f92672>==</span> NULL)
+	{
+		<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+	}
+	<span style=color:#66d9ef>return</span> query<span style=color:#f92672>-&gt;</span>l_child<span style=color:#f92672>-&gt;</span>tot;
+}
+
+<span style=color:#66d9ef>inline</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>tree_k_th</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> l, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> r, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> k)
+{
+	tree_node <span style=color:#f92672>*</span>left_root <span style=color:#f92672>=</span> (l <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>?</span> NULL <span style=color:#f92672>:</span> prefix[l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>]);
+	tree_node <span style=color:#f92672>*</span>right_root <span style=color:#f92672>=</span> prefix[r];
+	<span style=color:#66d9ef>int</span> binary_l <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>, binary_r <span style=color:#f92672>=</span> max_dis, mid;
+	<span style=color:#66d9ef>int</span> tot_left <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+	<span style=color:#66d9ef>while</span> (binary_l <span style=color:#f92672>&lt;</span> binary_r)
+	{
+		mid <span style=color:#f92672>=</span> (binary_l <span style=color:#f92672>+</span> binary_r) <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>1</span>;
+		<span style=color:#66d9ef>if</span> (tot_left <span style=color:#f92672>+</span> left_size(right_root) <span style=color:#f92672>-</span> left_size(left_root) <span style=color:#f92672>&gt;=</span> k)
+		{
+			right_root <span style=color:#f92672>=</span> right_root<span style=color:#f92672>-&gt;</span>l_child;
+			<span style=color:#66d9ef>if</span> (left_root <span style=color:#f92672>!=</span> NULL)
+			{
+				left_root <span style=color:#f92672>=</span> left_root<span style=color:#f92672>-&gt;</span>l_child;
+			}
+			binary_r <span style=color:#f92672>=</span> mid;
+		}
+		<span style=color:#66d9ef>else</span>
+		{
+			tot_left <span style=color:#f92672>+=</span> left_size(right_root) <span style=color:#f92672>-</span> left_size(left_root);
+			right_root <span style=color:#f92672>=</span> right_root<span style=color:#f92672>-&gt;</span>r_child;
+			<span style=color:#66d9ef>if</span> (left_root <span style=color:#f92672>!=</span> NULL)
+			{
+				left_root <span style=color:#f92672>=</span> left_root<span style=color:#f92672>-&gt;</span>r_child;
+			}
+			binary_l <span style=color:#f92672>=</span> mid <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+		}
+	}
+	<span style=color:#66d9ef>return</span> binary_l;
+}
+
+<span style=color:#75715e>#ifndef LOCAL_SIMP
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>	<span style=color:#66d9ef>long</span> <span style=color:#66d9ef>long</span> start_time_ <span style=color:#f92672>=</span> clock();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>	freopen(<span style=color:#e6db74>&#34;2104.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+	freopen(<span style=color:#e6db74>&#34;2104.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FREAD
+</span><span style=color:#75715e></span>	fread_init();
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>	read(n);
+	read(m);
+	init_recover_tree_node();
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+	{
+		scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, <span style=color:#f92672>&amp;</span>discre_tmp[i].val);
+		discre_tmp[i].id <span style=color:#f92672>=</span> i;
+	}
+	std<span style=color:#f92672>::</span>sort(discre_tmp, discre_tmp <span style=color:#f92672>+</span> n);
+	max_dis <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+	{
+		<span style=color:#66d9ef>if</span> ((i <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) <span style=color:#f92672>||</span> (discre_tmp[i <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>] <span style=color:#f92672>&lt;</span> discre_tmp[i]))
+		{
+			discre_to_num[<span style=color:#f92672>++</span>max_dis] <span style=color:#f92672>=</span> discre_tmp[i].val;
+		}
+		discre[discre_tmp[i].id] <span style=color:#f92672>=</span> max_dis;
+	}
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+	{
+		tree_insert(i);
+	}
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+	{
+		read(l);
+		read(r);
+		read(k);
+		printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, discre_to_num[tree_k_th(l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, r <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, k)]);
+	}
+<span style=color:#75715e>#ifdef LOCAL_TIME
+</span><span style=color:#75715e></span>	printf(<span style=color:#e6db74>&#34;run time: %lld msn&#34;</span>, clock() <span style=color:#f92672>-</span> start_time_);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e>#ifdef READ_FILE
+</span><span style=color:#75715e></span>	fclose(stdin);
+	fclose(stdout);
+<span style=color:#75715e>#endif
+</span><span style=color:#75715e></span>	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+<span style=color:#75715e>#else
+</span><span style=color:#75715e></span><span style=color:#66d9ef>int</span> a[MAXN];
+<span style=color:#66d9ef>int</span> sort_tmp[MAXN];
+
+<span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+{
+	<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> N <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>;
+	<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> M <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>;
+	<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>int</span> RAND_BASE <span style=color:#f92672>=</span> <span style=color:#ae81ff>243</span>;
+	freopen(<span style=color:#e6db74>&#34;2104.in&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+	srand(RAND_BASE);
+	printf(<span style=color:#e6db74>&#34;%d %dn&#34;</span>, N, M);
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> N; i<span style=color:#f92672>++</span>)
+	{
+		printf(<span style=color:#e6db74>&#34;%d &#34;</span>, rand());
+	}
+	printf(<span style=color:#e6db74>&#34;n&#34;</span>);
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> M; i<span style=color:#f92672>++</span>)
+	{
+		<span style=color:#66d9ef>int</span> l <span style=color:#f92672>=</span> rand() <span style=color:#f92672>%</span> N <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+		<span style=color:#66d9ef>int</span> r <span style=color:#f92672>=</span> l <span style=color:#f92672>+</span> rand() <span style=color:#f92672>%</span> (N <span style=color:#f92672>-</span> l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>);
+		<span style=color:#66d9ef>int</span> k <span style=color:#f92672>=</span> rand() <span style=color:#f92672>%</span> (r <span style=color:#f92672>-</span> l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>;
+		printf(<span style=color:#e6db74>&#34;%d %d %dn&#34;</span>, l, r, k);
+	}
+	fclose(stdout);
+	freopen(<span style=color:#e6db74>&#34;2104.in&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, stdin);
+	freopen(<span style=color:#e6db74>&#34;2104std.out&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>, stdout);
+	scanf(<span style=color:#e6db74>&#34;%d %d&#34;</span>, <span style=color:#f92672>&amp;</span>n, <span style=color:#f92672>&amp;</span>m);
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> n; i<span style=color:#f92672>++</span>)
+	{
+		scanf(<span style=color:#e6db74>&#34;%d&#34;</span>, a <span style=color:#f92672>+</span> i);
+	}
+	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+	{
+		scanf(<span style=color:#e6db74>&#34;%d %d %d&#34;</span>, <span style=color:#f92672>&amp;</span>l, <span style=color:#f92672>&amp;</span>r, <span style=color:#f92672>&amp;</span>k);
+		memcpy(sort_tmp, a <span style=color:#f92672>+</span> l <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, (r <span style=color:#f92672>-</span> l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>*</span> <span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>int</span>));
+		std<span style=color:#f92672>::</span>sort(sort_tmp, sort_tmp <span style=color:#f92672>+</span> r <span style=color:#f92672>-</span> l <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>);
+		printf(<span style=color:#e6db74>&#34;%dn&#34;</span>, sort_tmp[k <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>]);
+	}
+	fclose(stdin);
+	fclose(stdout);
+	<span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+}
+<span style=color:#75715e>#endif
+</span></code></pre></div></div></article><hr><div class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://www.sxn.dev/tags/poj>POJ</a></span><span class=tag><a href=https://www.sxn.dev/tags/%E4%B8%BB%E5%B8%AD%E6%A0%91>主席树</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>822 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2014-05-18 12:47 +0000</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.sxn.dev/posts/zoj2112/><span class=button__icon>←</span>
+<span class=button__text>[BZOJ1902][ZOJ2112]ZJU2112 Dynamic Rankings（树状数组 + 主席树）</span></a></span>
+<span class="button next"><a href=https://www.sxn.dev/posts/jsoi2008-maxnumber/><span class=button__text>[BZOJ1012][JSOI2008]最大数（树状数组）</span>
+<span class=button__icon>→</span></a></span></div></div></main></div><footer class=footer><div class=footer__inner><div class=footer__content><span>&copy; 2020</span>
+<span><a href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank rel=noopener>CC BY-NC 4.0</a></span>
+<span><a href=https://www.sxn.dev/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span></div></div><div class=footer__inner><div class=footer__content><span>Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>Theme <a href=https://github.com/rhazdon/hugo-theme-hello-friend-ng>Hello Friend NG</a></span></div></div></footer></div><script type=text/javascript src=/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js integrity="sha512-3HFukJLJggt3+W2ilNASCu6xibW86pdSMJ6+on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script></body></html>
